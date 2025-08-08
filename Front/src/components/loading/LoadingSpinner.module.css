@@ -10,7 +10,7 @@
   width: 100%;
   height: 100%;
   border: 2px solid #e5e5e5;
-  border-top-color: var(--main-color);
+  border-top-color: var(--admin-border-color);
   border-radius: 50%;
   animation: spinnerRotate 0.8s linear infinite;
 }
@@ -42,7 +42,7 @@
 
 /* 색상 변형을 위한 유틸리티 클래스들 */
 .primary .spinnerCircle {
-  border-top-color: var(--main-color);
+  border-top-color: var(--admin-color);
 }
 
 .white .spinnerCircle {

@@ -1,0 +1,15 @@
+import { ConnectCodeService } from "services/connect-code";
+import { container } from "tsyringe";
+import { schedule } from "../module";
+
+export function regist(DEV: boolean) {
+  // 스케줄링된 작업 시작
+  schedule(
+    "0 0 0 * * *",
+    async () => {
+      const service = container.resolve(ConnectCodeService);
+      await service.removeExpires();
+    },
+    {}
+  );
+}
