@@ -26,11 +26,12 @@ export default async function () {
           <FlexChild width={"max-content"}>
             <HeaderSide headerHeight={128} />
           </FlexChild>
-          <FlexChild width={"max-content"}>
+          <FlexChild width={"max-content"} padding={'0 10px'}>
             <Link href={`/${pathname?.split("/")?.[1]}`}>
               <Image
-                src="/resources/images/kpuffu_logo.png"
-                width={250}
+                src="/resources/images/logo.png"
+                // width={250}
+                height={127}
                 cursor="pointer"
               />
             </Link>
@@ -42,21 +43,7 @@ export default async function () {
                   width="160px"
                   placeholder="바로가기"
                   options={[
-                    {
-                      display: "월드베이프",
-                      value: "월드베이프",
-                      to: { url: "https://www.worldvape.co.kr/", new: true },
-                    },
-                    {
-                      display: "중국 쇼핑몰",
-                      value: "중국 쇼핑몰",
-                      to: { url: "https://www.puffukorea.com/", new: true },
-                    },
-                    {
-                      display: "푸푸 통합몰",
-                      value: "푸푸 통합몰",
-                      to: { url: "https://puffu.co.kr", new: true },
-                    },
+                  
                   ]}
                 />
               </FlexChild>

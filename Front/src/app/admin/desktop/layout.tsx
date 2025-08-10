@@ -14,7 +14,6 @@ export default async function ({
   const pathname = headerList.get("x-pathname");
 
   const { userData } = await useAuth();
-
   if (pathname === "/login") {
     if (
       userData &&

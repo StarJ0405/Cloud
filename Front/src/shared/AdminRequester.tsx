@@ -6,7 +6,7 @@ const mode = process.env.REACT_APP_MODE;
 
 const origin = mode
   ? process.env["NEXT_PUBLIC_BACK_" + mode.toUpperCase()] ||
-    process.env.NEXT_PUBLIC_BACK
+  process.env.NEXT_PUBLIC_BACK
   : process.env.NEXT_PUBLIC_BACK;
 
 class _AdminRequester {
@@ -129,7 +129,7 @@ class _AdminRequester {
             resolve(result);
           });
       });
-    } catch (e) {}
+    } catch (e) { }
   }
 
   async delete(url: string, data: any) {
@@ -165,108 +165,25 @@ class _AdminRequester {
             resolve(result);
           });
       });
-    } catch (e) {}
-  }
-  // 링크 관련
-  async getLinks(data?: any, callback?: Function): Promise<any> {
-    if (callback) callback(await this.get(`/links`, data));
-    else return await this.get(`/links`, data);
+    } catch (e) { }
   }
 
-  async getLink(id: string, data?: any, callback?: Function): Promise<any> {
-    if (callback) callback(await this.get(`/links/${id}`, data));
-    else return await this.get(`/links/${id}`, data);
+  // 회원 관련  
+  async getUsers(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/users`, data));
+    else return await this.get(`/users`, data);
   }
-
-  // 스토어 관련
-  async createStore(data?: StoreDataFrame, callback?: Function): Promise<any> {
-    if (callback) callback(await this.post(`/stores`, data));
-    else return await this.post(`/stores`, data);
+  async updateUser(id: string, data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/users/${id}`, data));
+    else return await this.post(`/users/${id}`, data);
   }
-  async getStores(data?: any, callback?: Function): Promise<any> {
-    if (callback) callback(await this.get(`/stores`, data));
-    else return await this.get(`/stores`, data);
+  async deleteUser(id: string, data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.delete(`/users/${id}`, data));
+    else return await this.delete(`/users/${id}`, data);
   }
-  async updateStore(
-    id: string,
-    data?: StoreDataFrame,
-    callback?: Function
-  ): Promise<any> {
-    if (callback) callback(await this.post(`/stores/${id}`, data));
-    else return await this.post(`/stores/${id}`, data);
-  }
-  async deleteStore(id: string, callback?: Function): Promise<any> {
-    if (callback) callback(await this.delete(`/stores/${id}`, {}));
-    else return await this.delete(`/stores/${id}`, {});
-  }
-  // 입점사
-  async createBrand(data?: BrandDataFrame, callback?: Function): Promise<any> {
-    if (callback) callback(await this.post(`/brands`, data));
-    else return await this.post(`/brands`, data);
-  }
-  async getBrands(data?: any, callback?: Function): Promise<any> {
-    if (callback) callback(await this.get(`/brands`, data));
-    else return await this.get(`/brands`, data);
-  }
-  async updateBrand(
-    id: string,
-    data?: BrandDataFrame,
-    callback?: Function
-  ): Promise<any> {
-    if (callback) callback(await this.post(`/brands/${id}`, data));
-    else return await this.post(`/brands/${id}`, data);
-  }
-  async deleteBrand(id: string, callback?: Function): Promise<any> {
-    if (callback) callback(await this.delete(`/brands/${id}`, {}));
-    else return await this.delete(`/brands/${id}`, {});
-  }
-  // 카테고리
-  async createCategory(
-    data?: CategoryDataFrame,
-    callback?: Function
-  ): Promise<any> {
-    if (callback) callback(await this.post(`/categories`, data));
-    else return await this.post(`/categories`, data);
-  }
-  async getCategories(data?: any, callback?: Function): Promise<any> {
-    if (callback) callback(await this.get(`/categories`, data));
-    else return await this.get(`/categories`, data);
-  }
-  async updateCategory(
-    id: string,
-    data?: CategoryDataFrame,
-    callback?: Function
-  ): Promise<any> {
-    if (callback) callback(await this.post(`/categories/${id}`, data));
-    else return await this.post(`/categories/${id}`, data);
-  }
-  async deleteCategory(id: string, callback?: Function): Promise<any> {
-    if (callback) callback(await this.delete(`/categories/${id}`, {}));
-    else return await this.delete(`/categories/${id}`, {});
-  }
-  // 상품
-  async createProduct(
-    data?: ProductDataFrame,
-    callback?: Function
-  ): Promise<any> {
-    if (callback) callback(await this.post(`/products`, data));
-    else return await this.post(`/products`, data);
-  }
-  async getProducts(data?: any, callback?: Function): Promise<any> {
-    if (callback) callback(await this.get(`/products`, data));
-    else return await this.get(`/products`, data);
-  }
-  async updateProduct(
-    id: string,
-    data?: ProductDataFrame,
-    callback?: Function
-  ): Promise<any> {
-    if (callback) callback(await this.post(`/products/${id}`, data));
-    else return await this.post(`/products/${id}`, data);
-  }
-  async deleteProduct(id: string, callback?: Function): Promise<any> {
-    if (callback) callback(await this.delete(`/products/${id}`, {}));
-    else return await this.delete(`/products/${id}`, {});
+  async inviteUser(data?:any,callback?:Function):Promise<any>{
+    if (callback) callback(await this.post(`/users/invite`, data));
+    else return await this.post(`/users/invite`, data);
   }
 }
 
@@ -293,3 +210,4 @@ if (process.env.NEXT_PUBLIC_DEV) {
 }
 
 export { adminRequester };
+

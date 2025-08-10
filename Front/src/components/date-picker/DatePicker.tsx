@@ -1,4 +1,6 @@
+'use client';
 import React, {
+  CSSProperties,
   useCallback,
   useEffect,
   useMemo,
@@ -22,6 +24,7 @@ interface DatePickerProps {
     showTimePicker: boolean
   ) => string;
   showTimePicker?: boolean; // 시간 선택기 표시 여부
+  zIndex?: CSSProperties['zIndex']
 }
 
 // 날짜/시간 포맷 함수 (YYYY-MM-DD HH:MM)
@@ -65,6 +68,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   placeholder = "날짜를 선택하세요",
   dateFormat = defaultDateFormat,
   showTimePicker = false,
+  zIndex = 1000
 }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedSingleDate, setSelectedSingleDate] = useState<Date | null>(
@@ -219,13 +223,17 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
       {isCalendarOpen &&
         ReactDOM.createPortal(
-          <div
-            ref={calendarRef}
-            className={styles.calendarPortal}
-            style={{ top: calendarPosition.top, left: calendarPosition.left }}
-          >
-            {renderPickerComponent()}
-          </div>,
+          <>
+            <div
+              ref={calendarRef}
+              className={styles.calendarPortal}
+              style={{ top: calendarPosition.top, left: calendarPosition.left, zIndex: zIndex ? `calc(${zIndex} + 1)` : undefined }}
+            >
+              {renderPickerComponent()}
+            </div>
+              <div style={{ zIndex, width: '100vw', height: '100vh', position: 'fixed' }} onClick={() => setIsCalendarOpen(false)} />
+          </>
+          ,
           document.body
         )}
     </div>

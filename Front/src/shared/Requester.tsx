@@ -6,7 +6,7 @@ const mode = process.env.REACT_APP_MODE;
 
 const origin = mode
   ? process.env["NEXT_PUBLIC_BACK_" + mode.toUpperCase()] ||
-    process.env.NEXT_PUBLIC_BACK
+  process.env.NEXT_PUBLIC_BACK
   : process.env.NEXT_PUBLIC_BACK;
 
 class _Requester {
@@ -129,7 +129,7 @@ class _Requester {
             resolve(result);
           });
       });
-    } catch (e) {}
+    } catch (e) { }
   }
 
   async delete(url: string, data: any) {
@@ -165,41 +165,30 @@ class _Requester {
             resolve(result);
           });
       });
-    } catch (e) {}
+    } catch (e) { }
   }
 
   // 회원 관련
-  async isConnectExist(data: any, callback?: Function): Promise<any> {
-    if (callback) callback(await this.get(`/connect/exist`, data));
-    else return await this.get(`/connect/exist`, data);
+  async signUp(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/users`, data));
+    else return await this.post(`/users`, data);
   }
-
-  async login(data: any, callback?: Function): Promise<string | any> {
+  async login(data?: any, callback?: Function): Promise<string | any> {
     if (callback) callback(await this.post(`/auth`, data));
     else return await this.post(`/auth`, data);
   }
+
   async getCurrentUser(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/users/me`, data));
     else return await this.get(`/users/me`, data);
   }
-  async userConnect(data: any, callback?: Function): Promise<any> {
-    if (callback) callback(await this.post(`/users/me/connect`, data));
-    else return await this.post(`/users/me/connect`, data);
+  async isExistUsername(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/auth`, data));
+    else return await this.get(`/auth`, data);
   }
-  // 스토어 관련
-  async getStores(data?: any, callback?: Function): Promise<any> {
-    if (callback) callback(await this.get(`/stores`, data));
-    else return await this.get(`/stores`, data);
-  }
-  // 카테고리 관련
-  async getCategories(data?: any, callback?: Function): Promise<any> {
-    if (callback) callback(await this.get(`/categories`, data));
-    else return await this.get(`/categories`, data);
-  }
-  // 상품 관련
-  async getProducts(data?: any, callback?: Function): Promise<any> {
-    if (callback) callback(await this.get(`/products`, data));
-    else return await this.get(`/products`, data);
+  async isLink(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/links`, data));
+    else return await this.get(`/links`, data);
   }
 }
 

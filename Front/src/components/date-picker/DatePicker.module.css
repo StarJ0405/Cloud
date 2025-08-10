@@ -32,6 +32,6 @@
 /* Portal로 렌더링되는 캘린더 컨테이너 */
 .calendarPortal {
   position: absolute; /* DatePicker 컴포넌트의 위치와 무관하게 body 기준으로 배치 */
-  z-index: 1000; /* 다른 요소 위에 표시되도록 높은 z-index 설정 */
+  width: max-content;
   /* top, left 속성은 DatePicker.tsx에서 동적으로 설정됩니다. */
 }

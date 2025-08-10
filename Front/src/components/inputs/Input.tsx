@@ -87,7 +87,7 @@ const Input = forwardRef(
       scrollMarginTop,
     }: {
       id?: string;
-      regExp?: [{ exp: { test: (value: any) => boolean } }];
+      regExp?: { exp: { test: (value: any) => boolean } }[];
       placeHolder?: string;
       className?: string;
       label?: string;

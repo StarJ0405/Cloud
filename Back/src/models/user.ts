@@ -12,6 +12,10 @@ export enum UserRole {
 
 @Entity({ name: "user" })
 @Index(["created_at"])
+// CREATE INDEX idx_user_id ON public.user USING GIN (fn_text_to_char_array(id));
+// CREATE INDEX idx_user_username ON public.user USING GIN (fn_text_to_char_array(username));
+// CREATE INDEX idx_user_name ON public.user USING GIN (fn_text_to_char_array(name));
+// CREATE INDEX idx_user_nickname ON public.user USING GIN (fn_text_to_char_array(nickname));
 export class User extends BaseEntity {
   @Column({ type: "character varying", unique: true })
   username?: string;
@@ -29,40 +33,10 @@ export class User extends BaseEntity {
   phone?: string;
 
   @Column({ type: "character varying", nullable: true })
-  email?: string;
+  thumbnail?: string;
 
-  @Column({ type: "character varying", nullable: true })
+  @Column({ type: "timestamp with time zone", nullable: true })
   birthday?: string;
-
-  @Column({ type: "character varying", nullable: true })
-  brand_id?: string;
-
-  @Column({ type: "character varying", nullable: true })
-  ci?: string;
-
-  @Column({ type: "character varying", nullable: true })
-  di?: string;
-
-  @Column({ type: "character varying", nullable: true })
-  biometric_algorithm?: string;
-
-  @Column({ type: "character varying", nullable: true })
-  biometric_enabled?: string;
-
-  @Column({ type: "character varying", nullable: true })
-  biometric_public_key?: string;
-
-  @Column({
-    type: "timestamp with time zone",
-    nullable: true,
-  })
-  biometric_registered_at?: Date;
-
-  @Column({ type: "character varying", nullable: true })
-  pin_hash?: string;
-
-  @Column({ type: "boolean", default: false })
-  adult_mode?: boolean;
 
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;

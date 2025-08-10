@@ -36,117 +36,14 @@ const SidebarNav: NavParent[] = [
     to: "/",
     icon: "/resources/images/sideNav_home.png",
   },
-  // {
-  //   name: "관리자 채팅",
-  //   to: "/chat",
-  //   icon: "/resources/images/sideNav_chat_admin.png",
-  // },
   {
-    name: "주문관리",
-    path: "/order",
+    name: "유저관리",
+    path: "/user",
     navs: [
       {
-        name: "주문관리",
+        name: "조회 및 관리",
         to: "/",
-        icon: "/resources/images/sideNav_order_management.png",
-      },
-      {
-        name: "전체주문 조회",
-        to: "/management",
-        icon: "/resources/images/sideNav_order_search.png",
-      },
-      {
-        name: "상품 준비중",
-        to: "/management/product",
-        icon: "/resources/images/sideNav_order_ready.png",
-      },
-      {
-        name: "배송대기",
-        to: "/management/ready",
-        icon: "/resources/images/sideNav_order_awaiting.png",
-      },
-      {
-        name: "배송중",
-        to: "/management/shipping",
-        icon: "/resources/images/sideNav_order_shipped.png",
-      },
-      {
-        name: "배송완료",
-        to: "/management/completed",
-        icon: "/resources/images/sideNav_order_completed.png",
-      },
-      {
-        name: "주문 취소",
-        to: "/management/cancel",
-        icon: "/resources/images/sideNav_order_cancel.png",
-      },
-      {
-        name: "상품 교환",
-        to: "/management/exchange",
-        icon: "/resources/images/sideNav_order_change.png",
-      },
-      {
-        name: "환불",
-        to: "/management/refund",
-        icon: "/resources/images/sideNav_order_refund.png",
-      },
-    ],
-  },
-  {
-    name: "상품관리",
-    path: "/product",
-    navs: [
-      {
-        name: "대시보드",
-        to: "/",
-        icon: "/resources/images/sideNav_product_management.png",
-      },
-      {
-        name: "조회 및 관리",
-        to: "/management",
-        icon: "/resources/images/sideNav_product_serach.png",
-      },
-      {
-        name: "상품등록",
-        to: "/regist",
-        icon: "/resources/images/sideNav_product_add.png",
-      },
-      {
-        name: "재고관리",
-        to: "/stock",
-        icon: "/resources/images/sideNav_product_stock.png",
-      },
-    ],
-  },
-  {
-    name: "입점사 관리",
-    path: "/brand",
-    navs: [
-      {
-        name: "조회 및 관리",
-        to: "/management",
-        icon: "/resources/images/sideNav_brand_management.png",
-      },
-      {
-        name: "입점사 등록",
-        to: "/regist",
-        icon: "/resources/images/sideNav_brand_add.png",
-      },
-    ],
-  },
-  {
-    name: "스토어 관리",
-    path: "/store",
-    navs: [
-      {
-        name: "조회 및 관리",
-        to: "/management",
-        icon: "/resources/images/sideNav_store_management.png",
-      },
-      {
-        name: "스토어등록",
-        to: "/regist",
-        icon: "/resources/images/sideNav_store_add.png",
+        icon: "/resources/images/sideNav_member_profile.png",
       },
     ],
   },

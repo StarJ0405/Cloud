@@ -15,9 +15,6 @@ import { getCookieOption, toast } from "@/shared/utils/Functions";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import styles from "./login.module.css";
-import Span from "../span/Span";
-import Div from "../div/Div";
-import Image from "../Image/Image";
 
 export default function ({
   pre_id,
@@ -92,27 +89,6 @@ export default function ({
                   자동 로그인
                 </P>
               </FlexChild>
-              <FlexChild width={"max-content"}>
-                <P>
-                  <Span
-                    weight={500}
-                    size={14}
-                    color="#474747"
-                    textDecoration={"underline"}
-                  >
-                    일회용 로그인
-                  </Span>{" "}
-                  <Span
-                    width={15}
-                    height={15}
-                    border={"1px solid #EAEAEA"}
-                    fontSize={8}
-                    borderRadius={"100%"}
-                  >
-                    ?
-                  </Span>
-                </P>
-              </FlexChild>
             </HorizontalFlex>
           </FlexChild>
           <FlexChild>
@@ -163,42 +139,7 @@ export default function ({
               </P>
             </Button>
           </FlexChild>
-          <FlexChild justifyContent="center" gap={4}>
-            <P fontWeight={500} size={14} color="#474747">
-              아이디 찾기
-            </P>
-            <Div width={0} height={10} borderRight={"1px solid #474747"} />
-            <P fontWeight={500} size={14} color="#474747">
-              비밀번호 찾기
-            </P>
-            <Div width={0} height={10} borderRight={"1px solid #474747"} />
-            <P fontWeight={500} size={14} color="#474747">
-              회원가입
-            </P>
-          </FlexChild>
         </VerticalFlex>
-        <FlexChild paddingTop={20} className={styles.divider}>
-          <P margin={"0 8px"} color="#8b8b8b" weight={500} fontSize={14}>
-            또는
-          </P>
-        </FlexChild>
-        <FlexChild marginTop={8} justifyContent="center">
-          <P weight={500} fontSize={14} color="#8b8b8b">
-            SNS 계정으로 간편하게 로그인
-          </P>
-        </FlexChild>
-        <FlexChild paddingTop={8} gap={20} justifyContent="center">
-          <Image
-            src="/resources/images/social_naver.png"
-            size={54}
-            borderRadius={"100%"}
-          />
-          <Image
-            src="/resources/images/social_google.png"
-            size={54}
-            borderRadius={"100%"}
-          />
-        </FlexChild>
       </VerticalFlex>
     </CheckboxGroup>
   );

@@ -50,8 +50,7 @@ const app = express();
 if (process.env.CONSOLE_LOG)
   app.use((req: Request, res: Response, next: NextFunction) => {
     console.log(
-      `[${new Date().toISOString()}] ${req.method} ${req.originalUrl} from ${
-        req.ip
+      `[${new Date().toISOString()}] ${req.method} ${req.originalUrl} from ${req.ip
       }`
     );
     next();
@@ -93,9 +92,22 @@ let collectedSocketHandlers: Map<string, any> = new Map();
 async function __loadApiRoutes(appRouter: Router) {
   try {
     collectedSocketHandlers = new Map();
-    const files = await fs.promises.readdir(API_BASE_DIR, {
+    const files = (await fs.promises.readdir(API_BASE_DIR, {
       recursive: true,
       withFileTypes: false,
+    })).sort((a, b) => {
+      const isAStatic = !a.includes('[');
+      const isBStatic = !b.includes('[');
+      const isACatchAll = a.includes('[...');
+      const isBCatchAll = b.includes('[...');
+
+      if (isAStatic && isBStatic) return 0;
+      if (isAStatic) return -1;
+      if (isBStatic) return 1;
+      if (isACatchAll) return 1;
+      if (isBCatchAll) return -1;
+
+      return 0;
     });
     for (const fileRelativePath of files) {
       const isRouteFile =

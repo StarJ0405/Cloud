@@ -12,6 +12,7 @@ function ModalBaseHeader({
   headerStyle,
   color,
   closeBtnWhite,
+  styleType
 }: any) {
   return (
     <div className={style.header} style={headerStyle}>
@@ -26,7 +27,7 @@ function ModalBaseHeader({
         </FlexChild>
         <FlexChild width={50}>
           <VerticalFlex>
-            <Button className={style.headerCloseButton} onClick={modalClose}>
+            <Button styleType={styleType} className={style.headerCloseButton} onClick={modalClose}>
               {/* &times; */}
               {closeBtnWhite ? (
                 <Icon name={"closeBtnWhite2x"} width={18} />

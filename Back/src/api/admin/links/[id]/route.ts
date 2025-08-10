@@ -10,13 +10,15 @@ export const POST: ApiHandler = async (req, res) => {
     end_date,
     chance = 1,
     data,
+    type,
     metadata,
+    auto_delete,
     return_data = false,
   } = req.body;
 
   const service: LinkService = container.resolve(LinkService);
   try {
-    const _data = { start_date, end_date, chance, data, metadata };
+    const _data = { start_date, end_date, chance, data, type, metadata, auto_delete };
     const result: UpdateResult<Link> = await service.update(
       { id: id },
       _data,

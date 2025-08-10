@@ -1,9 +1,15 @@
 export default function () {
   `
-  CREATE INDEX idx_brand_name ON public.brand USING GIN (fn_text_to_char_array(name));
-  CREATE INDEX idx_category_name ON public.category USING GIN (fn_text_to_char_array(name));
-  CREATE INDEX idx_store_name ON public.store USING GIN (fn_text_to_char_array(name));
-  CREATE INDEX idx_product_title ON public.product USING GIN (fn_text_to_char_array(title));
-  CREATE INDEX idx_varaint_title ON public.variant USING GIN (fn_text_to_char_array(title));
+  CREATE OR REPLACE FUNCTION fn_text_to_char_array(p_text TEXT)
+        RETURNS TEXT[]
+        LANGUAGE sql
+        IMMUTABLE
+        AS $$
+          SELECT string_to_array(LOWER(REPLACE(p_text, ' ', '')), NULL);
+        $$;
+  CREATE INDEX idx_user_id ON public.user USING GIN (fn_text_to_char_array(id));
+  CREATE INDEX idx_user_username ON public.user USING GIN (fn_text_to_char_array(username));
+  CREATE INDEX idx_user_name ON public.user USING GIN (fn_text_to_char_array(name));
+  CREATE INDEX idx_user_nickname ON public.user USING GIN (fn_text_to_char_array(nickname));
   `;
 }

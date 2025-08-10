@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 export const BrowserDetectContext = createContext<{
   deviceType: DeviceType;
@@ -8,6 +8,8 @@ export const BrowserDetectContext = createContext<{
   isMobile: boolean;
   isDeskTop: boolean;
   isTablet: boolean;
+  domain: string;
+  subdomain: string;
 }>({
   deviceType: "" as DeviceType,
   OS: "" as OSType,
@@ -15,6 +17,8 @@ export const BrowserDetectContext = createContext<{
   isMobile: false,
   isDeskTop: false,
   isTablet: false,
+  domain: "",
+  subdomain: "",
 });
 
 const MOBILE_MAX_WIDTH = 768;
@@ -25,16 +29,21 @@ export default function BrowserEventProviderClient({
   initDeviceType,
   initOS,
   initWebView,
+  subdomain
 }: {
   children: React.ReactNode;
   initDeviceType: DeviceType;
   initOS: OSType;
   initWebView: boolean;
+  subdomain: string;
 }) {
   const [deviceType] = useState(initDeviceType);
   const [OS] = useState(initOS);
   const [webView] = useState(initWebView);
-
+  const [domain, setDomain] = useState('');
+  useEffect(() => {
+    setDomain((window?.location?.origin || "").replace(`${subdomain}.`, ''))
+  }, [])
   return (
     <BrowserDetectContext.Provider
       value={{
@@ -44,6 +53,8 @@ export default function BrowserEventProviderClient({
         isMobile: deviceType === "mobile",
         isDeskTop: deviceType === "desktop",
         isTablet: deviceType === "tablet",
+        domain,
+        subdomain,
       }}
     >
       {children}

@@ -17,12 +17,11 @@ export const getCookieOption = ({
   let href = window.location.hostname.replace("www.", "");
 
   const domains = (process.env.NEXT_PUBLIC_MAIN_DOMAIN || "").split(",");
-
+  
   if (domains.length > 0)
     domains.forEach((domain: string) => {
       if (href.endsWith(domain)) href = domain;
     });
-
   const data: any = { domain: href, path: "/" };
   if (maxAge) {
     data.maxAge = maxAge;
@@ -59,8 +58,8 @@ export const dataToQuery = (data: any) => {
       acc[key] = Array.isArray(data[key])
         ? data[key]
         : typeof data[key] === "object"
-        ? JSON.stringify(data[key])
-        : data[key];
+          ? JSON.stringify(data[key])
+          : data[key];
       return acc;
     }, {})
   ).toString();
@@ -270,3 +269,11 @@ export const throttle = <T extends (...args: any[]) => void>(
     return lastResult;
   };
 };
+
+export const PhoneString= (phone:string)=>{
+  phone = phone.replaceAll('-','');
+  const one = phone.slice(0,3)
+  const two = phone.slice(3,7)
+  const three = phone.slice(7);
+  return `${one}-${two}-${three}`
+}

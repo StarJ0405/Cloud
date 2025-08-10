@@ -19,7 +19,9 @@
   text-align: left;
   font-weight: 500;
 }
-
+.spinnerHeader{
+  padding: 15px;
+}
 .spinnerColumnsWrapper {
   position: relative;
   display: flex;
@@ -28,46 +30,22 @@
   padding: 20px 0;
   background-color: #fff;
   position: relative; /* 선택 라인이 wrapper를 기준으로 위치할 경우 (아니면 각 column에) */
+  height: 300px;
+}
+.spinnerColumnLine{
+  display: flex;
+  flex-direction: column;
+  max-height: 300px;
+  height: 300px;
+  scrollbar-width: none;
+  padding: 135px 0;
 }
 
-.spinnerColumn {
-  position: relative; /* 중요: 자식 absolute 요소의 기준점 */
-  height: 150px; /* ITEM_HEIGHT (30px) * 5 = 150px. 정확히 5개 항목이 보여야 함. */
-  overflow-y: scroll; /* 스크롤 가능하게 설정 */
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-  flex: 1;
-  max-width: 90px; /* 각 컬럼의 최대 너비 */
-  text-align: center;
-  cursor: grab; /* 드래그 가능함을 시각적으로 알림 */
-
-  /* 스크롤 효과를 위한 마스킹 (위아래를 흐릿하게) */
-  mask-image: linear-gradient(
-    to bottom,
-    transparent,
-    black 20%,
-    black 80%,
-    transparent
-  );
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent,
-    black 20%,
-    black 80%,
-    transparent
-  );
-
-  /* 터치 스크롤 최적화 */
-  -webkit-overflow-scrolling: touch;
-
-  /* 스크롤 시 항목 깜빡임 방지 (transform 사용 시) */
-  transform: translateZ(0); /* GPU 가속 활성화 */
+.spinnerColumn{
+ padding: 7px; 
+ text-align: center;
 }
 
-/* 스크롤바 숨기기 */
-.spinnerColumn::-webkit-scrollbar {
-  display: none;
-}
 
 /* 선택된 항목을 강조하는 라인 (가운데 1개 항목 높이만큼) */
 /* 이 라인들이 컬럼 중앙에 오도록 해야 합니다. */
@@ -147,7 +125,6 @@
 
 .doneButtonContainer {
   text-align: right;
-  padding: 10px 20px;
   width: max-content;
   margin-left: auto;
 }
@@ -158,7 +135,7 @@
   color: #1a73e8;
   font-size: 1em;
   font-weight: 500;
-  padding: 8px 15px;
+  padding: 8px 15px 0 15px;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s ease;

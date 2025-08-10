@@ -36,6 +36,6 @@ export class AccountLink extends BaseEntity {
 
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {
-    this.id = generateEntityId(this.id, "ccd");
+    this.id = generateEntityId(this.id, "acl");
   }
 }

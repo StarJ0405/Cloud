@@ -210,6 +210,7 @@ const ModalBase = forwardRef((props: any, ref) => {
                     color={props.color}
                     modalClose={modalClose}
                     closeBtnWhite={props.closeBtnWhite}
+                    styleType={props.styleType}
                   />
                 )}
               </FlexChild>

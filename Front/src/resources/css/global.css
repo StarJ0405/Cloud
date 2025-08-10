@@ -16,6 +16,7 @@ body {
   overflow-x: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  overscroll-behavior-y: contain;
 }
 
 body {
@@ -93,4 +94,5 @@ a {
   --admin-button-color: red;
   --admin-button-text-color: #fff;
   --bg-base-color: #f4f4f4;
+  --main-color: rgb(160, 160, 88);
 }

@@ -2,7 +2,7 @@ import { BaseService } from "data-source";
 import { Link } from "models/link";
 import { LinkRepository } from "repositories/link";
 import { inject, injectable } from "tsyringe";
-import { DeepPartial, FindOptionsWhere, In } from "typeorm";
+import { DeepPartial, FindOptionsWhere, In, IsNull } from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { generateShortId } from "utils/functions";
 
@@ -13,15 +13,17 @@ export class LinkService extends BaseService<Link, LinkRepository> {
   }
   async create(data: DeepPartial<Link>): Promise<Link> {
     let isUnique = false;
-    let code = generateShortId(24);
+    let code = data?.code || generateShortId(24);
+    const type = data.type || IsNull()
     do {
       const entity = await this.repository.findOne({
         where: {
           code,
+          type
         },
       });
       if (!entity) isUnique = true;
-      else code = generateShortId(24);
+      else code = generateShortId(code.length);
     } while (!isUnique);
     return await this.repository.create({ ...data, code });
   }
@@ -30,20 +32,22 @@ export class LinkService extends BaseService<Link, LinkRepository> {
 
     let array = Array.from({ length: amount }).map(() => ({
       ...data,
-      code: generateShortId(24),
+      code: generateShortId(data?.code?.length || 24),
     }));
     let isUnique = false;
     do {
+      const type = data.type || IsNull()
       const entities = await this.repository.findAll({
         where: {
           code: In(array.map((link) => link.code)),
+          type,
         },
       });
       if (entities.length === 0) isUnique = true;
       else
         array = array.map((link) => {
           if (entities.some((s) => s.code === link.code))
-            link.code = generateShortId(24);
+            link.code = generateShortId(link?.code?.length || 24);
           return link;
         });
     } while (!isUnique);
@@ -55,6 +59,8 @@ export class LinkService extends BaseService<Link, LinkRepository> {
     data: QueryDeepPartialEntity<Link>,
     returnEnttiy?: boolean
   ): Promise<UpdateResult<Link>> {
+    delete data.code;
+    delete data.type;
     const affected = await this.repository.update(where, data);
     let result: Link[] = [];
     if (returnEnttiy) {
@@ -70,6 +76,9 @@ export class LinkService extends BaseService<Link, LinkRepository> {
     soft?: boolean
   ): Promise<number> {
     return await this.repository.delete(where, soft);
+  }
+  async clean(): Promise<void> {
+    await this.repository.builder('l').delete().where(`auto_delete is true`).andWhere('((NOW() BETWEEN start_date AND end_date) OR chance = 0)').execute()
   }
   async restore(
     where: FindOptionsWhere<Link> | FindOptionsWhere<Link>[],

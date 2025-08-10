@@ -14,6 +14,7 @@ export default async function BrowserEventProvider({
 }) {
   const headersList = await headers();
   const userAgent = headersList.get("user-agent");
+  const subdomain = headersList.get('x-subdomain')
   const initDeviceType = getDeviceType(userAgent);
   const initOS = getOperatingSystem(userAgent);
   const initWebView = getWebView(userAgent);
@@ -22,6 +23,7 @@ export default async function BrowserEventProvider({
       initDeviceType={initDeviceType}
       initOS={initOS}
       initWebView={initWebView}
+      subdomain={subdomain || "www"}
     >
       {children}
     </BrowserEventProviderClient>

@@ -48,7 +48,7 @@ function Button({
   type?: "button" | "file";
   disabled?: boolean;
   onChange?: any;
-  styleType?: "main" | "admin" | "reverse" | "white" | "admin2";
+  styleType?: "main" | "admin" | "reverse" | "white" | "admin2" | "none";
   isLoading?: boolean;
 }) {
   const inputRef = useRef<any>(null);

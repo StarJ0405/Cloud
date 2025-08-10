@@ -2,11 +2,8 @@ import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import ContextMenuModal from "@/modals/context/ContextMenuModal";
 import ToastModal from "@/modals/toast/ToastModal";
 import NiceModal from "@ebay/nice-modal-react";
-import BrandModal from "./admin/brand/BrandModal";
-import CategoriesModal from "./admin/category/CategoriesModal";
-import CategoryList from "./admin/category/CategoryListModal";
-import CategoryModal from "./admin/category/CategoryModal";
-import StoreModal from "./admin/store/StoreModal";
+import UserModal from "./admin/user/UserModal";
+import InputModal from "./input/InputModal";
 import ListModal from "./list/ListModal";
 
 function ModalHandler() {
@@ -14,12 +11,9 @@ function ModalHandler() {
   NiceModal.register("confirm", ConfirmModal);
   NiceModal.register("list", ListModal);
   NiceModal.register("contextMenu", ContextMenuModal);
+  NiceModal.register("input", InputModal);
   // admin
-  NiceModal.register("storeDetail", StoreModal);
-  NiceModal.register("brandDetail", BrandModal);
-  NiceModal.register("categoryList", CategoryList);
-  NiceModal.register("categories", CategoriesModal);
-  NiceModal.register("categoryDetail", CategoryModal);
+  NiceModal.register("userDetail", UserModal);
   return <></>;
 }
 

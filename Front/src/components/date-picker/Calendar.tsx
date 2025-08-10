@@ -1,4 +1,6 @@
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+'use client';
+import clsx from "clsx";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./Calendar.module.css"; // CSS Modules import
 
 interface CalendarProps {
@@ -20,6 +22,8 @@ const Calendar: React.FC<CalendarProps> = ({
   selectionMode = "single",
   showTimePicker = false,
 }) => {
+  let startY: number | null = null;
+  const [type, setType] = useState<"date" | "month" | "year">("date");
   // 현재 달력을 표시할 월과 연도 상태
   const [currentMonth, setCurrentMonth] = useState(initialDate.getMonth());
   const [currentYear, setCurrentYear] = useState(initialDate.getFullYear());
@@ -179,22 +183,31 @@ const Calendar: React.FC<CalendarProps> = ({
   const goToPreviousMonth = useCallback(() => {
     setCurrentMonth((prevMonth) => {
       if (prevMonth === 0) {
-        setCurrentYear((prevYear) => prevYear - 1);
+        setCurrentYear(currentYear - 1);
         return 11;
       }
       return prevMonth - 1;
     });
-  }, []);
+  }, [currentYear]);
 
   const goToNextMonth = useCallback(() => {
     setCurrentMonth((prevMonth) => {
       if (prevMonth === 11) {
-        setCurrentYear((prevYear) => prevYear + 1);
+        setCurrentYear(currentYear + 1);
         return 0;
       }
       return prevMonth + 1;
     });
-  }, []);
+  }, [currentYear]);
+
+  // 년 이동
+  const goToPreviousYear = useCallback(() => {
+    setCurrentYear(currentYear - 1);
+  }, [currentYear]);
+
+  const goToNextYear = useCallback(() => {
+    setCurrentYear(currentYear + 1);
+  }, [currentYear]);
 
   // 각 날짜 셀에 적용될 CSS 클래스를 결정하는 함수
   const getDateClassName = useCallback(
@@ -221,24 +234,24 @@ const Calendar: React.FC<CalendarProps> = ({
       );
       const cleanSelectedDate = selectedDate
         ? new Date(
-            selectedDate.getFullYear(),
-            selectedDate.getMonth(),
-            selectedDate.getDate()
-          )
+          selectedDate.getFullYear(),
+          selectedDate.getMonth(),
+          selectedDate.getDate()
+        )
         : null;
       const cleanRangeStart = rangeStart
         ? new Date(
-            rangeStart.getFullYear(),
-            rangeStart.getMonth(),
-            rangeStart.getDate()
-          )
+          rangeStart.getFullYear(),
+          rangeStart.getMonth(),
+          rangeStart.getDate()
+        )
         : null;
       const cleanRangeEnd = rangeEnd
         ? new Date(
-            rangeEnd.getFullYear(),
-            rangeEnd.getMonth(),
-            rangeEnd.getDate()
-          )
+          rangeEnd.getFullYear(),
+          rangeEnd.getMonth(),
+          rangeEnd.getDate()
+        )
         : null;
 
       // 단일 선택 모드일 때 선택된 날짜
@@ -352,22 +365,33 @@ const Calendar: React.FC<CalendarProps> = ({
       onSelectRange,
     ]
   );
-
-  return (
-    <div className={styles.calendarContainer}>
+  const Picker = () => {
+    switch (type) {
+      case "date":
+        return <DatePicker />
+      case 'month':
+        return <MonthPicker />
+      case 'year':
+        return <YearPicker />
+      default:
+        return <></>
+    }
+  }
+  const DatePicker = () => {
+    const [hover, setHover] = useState<any>(null);
+    return <>
       {/* 달력 헤더 (월/연도, 이전/다음 버튼) */}
       <div className={styles.calendarHeader}>
         <button className={styles.navButton} onClick={goToPreviousMonth}>
           {"<"}
         </button>
-        <div className={styles.currentMonthYear}>
+        <div className={styles.currentMonthYear} style={{ cursor: type !== 'year' ? 'pointer' : undefined }} onClick={() => setType('month')}>
           {currentYear}년 {monthNames[currentMonth]}
         </div>
         <button className={styles.navButton} onClick={goToNextMonth}>
           {">"}
         </button>
       </div>
-
       {/* 요일 헤더 */}
       <div className={styles.weekDays}>
         {["일", "월", "화", "수", "목", "금", "토"].map((day) => (
@@ -382,14 +406,111 @@ const Calendar: React.FC<CalendarProps> = ({
         {datesInMonth.map((date, index) => (
           <div
             key={index}
-            className={getDateClassName(date)}
+            className={clsx(getDateClassName(date), { [styles.selected]: hover && rangeStart && (date.getTime() === hover.getTime() && date.getTime() > rangeStart.getTime()), [styles.inRange]: rangeStart && hover && (date.getTime() < hover.getTime() && date.getTime() > rangeStart.getTime()) })}
             onClick={() => handleDateClick(date)}
+            onMouseEnter={() => { if (selectionMode === 'single') return; if (rangeEnd) setHover(null); else if (rangeStart) setHover(date); }}
+            onMouseLeave={() => { if (selectionMode === 'single') return; setHover(null); }}
           >
             {date.getDate()}
           </div>
         ))}
       </div>
-
+    </>
+  }
+  const MonthPicker = () => {
+    return <>
+      {/* 달력 헤더 (월/연도, 이전/다음 버튼) */}
+      <div className={styles.calendarHeader}>
+        <button className={styles.navButton} onClick={goToPreviousYear}>
+          {"<"}
+        </button>
+        <div className={styles.currentMonthYear} style={{ cursor: type !== 'year' ? 'pointer' : undefined }} onClick={() => setType('year')}>
+          {currentYear}년
+        </div>
+        <button className={styles.navButton} onClick={goToNextYear}>
+          {">"}
+        </button>
+      </div>
+      {/* 월 그리드 */}
+      <div className={styles.monthContainer}>
+        {Array.from({ length: 12 }).map((_, i) => <div key={`moth_${i}`} className={clsx(styles.month, { [styles.today]: today.getMonth() === i && today.getFullYear() === currentYear })} onClick={() => { setCurrentMonth(i); setType('date'); }}><p>{i + 1}</p></div>)}
+        {Array.from({ length: 4 }).map((_, i) => <div key={`next_moth_${i}`} className={clsx(styles.month, styles.other)} onClick={() => { setCurrentMonth(i); setCurrentYear(currentYear + 1); setType('date'); }}><p>{i + 1}</p></div>)}
+      </div >
+    </>
+  }
+  const YearPicker = () => {
+    const startYear = currentYear - currentYear % 16;
+    return <>
+      {/* 달력 헤더 (월/연도, 이전/다음 버튼) */}
+      <div className={styles.calendarHeader}>
+        <button className={styles.navButton} onClick={() => setCurrentYear(startYear - 1)}>
+          {"<"}
+        </button>
+        <div className={styles.currentMonthYear} style={{ cursor: type !== 'year' ? 'pointer' : undefined }} onClick={() => setType('year')}>
+          {startYear + 1} - {startYear + 16}
+        </div>
+        <button className={styles.navButton} onClick={() => setCurrentYear(startYear + 16)}>
+          {">"}
+        </button>
+      </div>
+      {/* 년 그리드 */}
+      <div className={styles.monthContainer}>
+        {Array.from({ length: 16 }).map((_, i) => <div key={`year_${startYear + i}`} className={clsx(styles.year, { [styles.today]: today.getFullYear() === startYear + i + 1 })} onClick={() => { setCurrentYear(startYear + i + 1); setType('month'); }}><p>{startYear + i + 1}</p></div>)}
+      </div >
+    </>
+  }
+  const Move = (delta: number) => {
+    if (delta > 0) {
+      switch (type) {
+        case "date":
+          if (currentMonth < 11)
+            setCurrentMonth(currentMonth + 1);
+          else {
+            setCurrentYear(currentYear + 1);
+            setCurrentMonth(0);
+          }
+          break;
+        case 'month':
+          setCurrentYear(currentYear + 1)
+          break;
+        case 'year':
+          const startYear = currentYear - currentYear % 16;
+          setCurrentYear(startYear + 16)
+          break;
+      }
+    } else if (delta < 0) {
+      switch (type) {
+        case "date":
+          if (currentMonth > 0)
+            setCurrentMonth(currentMonth - 1);
+          else {
+            setCurrentYear(currentYear - 1);
+            setCurrentMonth(11);
+          }
+          break;
+        case 'month':
+          setCurrentYear(currentYear - 1)
+          break;
+        case 'year':
+          const startYear = currentYear - currentYear % 16;
+          setCurrentYear(startYear - 1)
+          break;
+      }
+    }
+  }
+  return (
+    <div className={styles.calendarContainer} onTouchStart={(e) => {
+      startY = e.touches[0].clientY;
+    }} onTouchMove={e => {
+      if (startY) {
+        const delta = e.touches[0].clientY - startY;
+        if (Math.abs(delta) > 60)
+          Move(delta)
+      }
+    }} onTouchEnd={() => { startY = null }} onWheel={(e) => {
+      Move(e.deltaY);
+    }}>
+      <Picker />
       {/* 시간 선택기 (옵션에 따라 표시) */}
       {showTimePicker && (
         <div className={styles.timePickersContainer}>

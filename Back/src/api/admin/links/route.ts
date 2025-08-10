@@ -9,7 +9,9 @@ export const POST: ApiHandler = async (req, res) => {
     end_date,
     chance = 1,
     data,
+    type,
     metadata,
+    auto_delete,
     amount = 1,
     return_data = false,
   } = req.body;
@@ -17,7 +19,7 @@ export const POST: ApiHandler = async (req, res) => {
   const service: LinkService = container.resolve(LinkService);
   try {
     let result: Link[] = [];
-    const _data = { start_date, end_date, chance, data, metadata };
+    const _data = { start_date, end_date, chance, data, type, metadata, auto_delete };
     if (amount === 1) {
       result = [await service.create(_data)];
     } else {

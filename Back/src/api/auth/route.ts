@@ -26,9 +26,19 @@ export const POST: ApiHandler = async (req, res) => {
       },
       keep
         ? {
-            expiresIn: "31d",
-          }
+          expiresIn: "31d",
+        }
         : {}
     ),
   });
 };
+
+export const GET: ApiHandler = async (req, res) => {
+  const { username } = req.parsedQuery
+  if (username) {
+    const service = container.resolve(UserService);
+    const user = await service.get({ where: { username } })
+    return res.json({ exist: !!user })
+  }
+  return res.status(404).send("Cannot GET /auth")
+}
