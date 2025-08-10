@@ -9,7 +9,7 @@ export class Link extends BaseEntity {
   @Column({ type: "character varying", length: 24 })
   code?: string;
 
-  @Column({ type: "character varying", length: 24, nullable: true })
+  @Column({ type: "character varying", nullable: true })
   type?: string;
 
   @Column({ type: "timestamp with time zone", nullable: true })
