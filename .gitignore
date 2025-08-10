@@ -12,6 +12,8 @@
 /Front/build
 /Front/build2
 /Front/Build
+/Back/log/**
+/Back/dist/**
 
 # misc
 .env
