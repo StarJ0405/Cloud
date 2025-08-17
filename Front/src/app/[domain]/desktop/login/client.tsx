@@ -17,26 +17,49 @@ import { useEffect, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
 
 export function Social() {
+    const naviate = useNavigate()
     return <VerticalFlex gap={10}>
-        <Line icon="/resources/images/google.png" name="Google 계정으로 계속하기" />
-        <Line icon="/resources/images/apple.png" name="Apple 계정으로 계속하기" />
-        <Line icon="/resources/images/naver.png" name="Naver 계정으로 계속하기" />
-        <Line icon="/resources/images/kakao.png" name="Kakao 계정으로 계속하기" />
+        <Line icon="/resources/images/google.png" name="Google 계정으로 계속하기" onClick={() => {
+            requester.getOAuthURL('google', {}, ({ url }: { url: string }) => {
+                naviate(url)
+            })
+        }} />
+        <Line icon="/resources/images/apple.png" name="Apple 계정으로 계속하기" onClick={() => { }} />
+        <Line icon="/resources/images/naver.png" name="Naver 계정으로 계속하기" onClick={() => { }} />
+        <Line icon="/resources/images/kakao.png" name="Kakao 계정으로 계속하기" onClick={() => { }} />
     </VerticalFlex>
 }
 
 
 
-function Line({ icon, name }: { icon: string, name: string }) {
-    return <FlexChild padding={10} border={'1px solid rgba(84, 72, 49, 0.15)'} borderRadius={6}>
+function Line({ icon, name, onClick }: { icon: string, name: string, onClick: () => void }) {
+    return <FlexChild padding={10} border={'1px solid rgba(84, 72, 49, 0.15)'} borderRadius={6} cursor="pointer" onClick={onClick}>
         <Image src={icon} size={16} />
         <P fontSize={14} width={'100%'} textAlign="center">{name}</P>
     </FlexChild>
 }
 
-export function Login({ error }: { error?: string }) {
-    const { userData } = useAuth();
+export function Login({ error, state, code }: { error?: string, state?: string, code?: string }) {
     const [, setCookie] = useCookies([Cookies.JWT])
+    useEffect(() => {
+        if (state && code) {
+            switch (state) {
+                case "google": {
+                    requester.loginOauth(state, {
+                        code,
+                    }, ({ access_token, error }: { access_token?: string, error?: string }) => {
+                        if (access_token) {
+                            setCookie(Cookies.JWT, access_token, getCookieOption())
+                        }
+                        if (error)
+                            toast({ message: error })
+                    })
+                    break;
+                }
+            }
+        }
+    }, [state, code])
+    const { userData } = useAuth();
     const inputs = useRef<any[]>([])
     const [expand, setExpand] = useState(false);
     const navigate = useNavigate();

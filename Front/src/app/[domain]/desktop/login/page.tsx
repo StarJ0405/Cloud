@@ -9,7 +9,7 @@ import { Login, Social } from "./client";
 export default async function ({ searchParams }: { searchParams: Promise<SearchParams> }) {
     const { userData } = await useAuth()
     if (!!userData) { redirect('/'); }
-    const { email, code, error } = await searchParams;
+    const { email, code, error, state } = await searchParams;
     if (email && code) {
         redirect(`/signup?email=${email}&code=${code}`)
     }
@@ -22,7 +22,7 @@ export default async function ({ searchParams }: { searchParams: Promise<SearchP
         </FlexChild>
         <FlexChild height={1} borderBottom={'1px solid rgba(84, 72, 49, 0.15)'} padding={10} marginBottom={20} />
         <FlexChild>
-            <Login error={error as string} />
+            <Login error={error as string} code={code as string} state={state as string} />
         </FlexChild>
         <FlexChild padding={30}>
             <P size={12}>계속 진행하면 이용약관및 개인정보처리방침을 이해하고 동의하는 것으로 간주됩니다.</P>

@@ -1,5 +1,3 @@
-import Div from "@/components/div/Div";
-import VerticalFlex from "@/components/flex/VerticalFlex";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivder";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -14,11 +12,9 @@ export default async function ({
   if (!userData) redirect('/login')
   return (
     <LayoutClient>
-      <VerticalFlex height={"100vh"}>
-        {/*  */}
-        {children}
-        {/*  */}
-      </VerticalFlex>
+      {/*  */}
+      {children}
+      {/*  */}
     </LayoutClient>
   );
 }
