@@ -12,7 +12,6 @@ function ModalBaseHeader({
   headerStyle,
   color,
   closeBtnWhite,
-  styleType
 }: any) {
   return (
     <div className={style.header} style={headerStyle}>
@@ -20,14 +19,18 @@ function ModalBaseHeader({
         <FlexChild width={50}></FlexChild>
         <FlexChild>
           <VerticalFlex>
-            <P size={25} color={color} weight={700}>
-              {title}
-            </P>
+            {typeof title === "string" ? (
+              <P size={25} color={color} weight={700}>
+                {title}
+              </P>
+            ) : (
+              <>{title}</>
+            )}
           </VerticalFlex>
         </FlexChild>
         <FlexChild width={50}>
           <VerticalFlex>
-            <Button styleType={styleType} className={style.headerCloseButton} onClick={modalClose}>
+            <Button className={style.headerCloseButton} onClick={modalClose}>
               {/* &times; */}
               {closeBtnWhite ? (
                 <Icon name={"closeBtnWhite2x"} width={18} />

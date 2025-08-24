@@ -27,7 +27,7 @@
 }
 
 .input {
-  padding: 10px 12px;
+  padding: 15px 12px;
   font-size: 15px;
   border: 1px solid var(--line-color, #ccc); /* Fallback for --line-color */
   border-radius: 0;
@@ -35,19 +35,6 @@
   outline: none; /* Remove default outline */
   transition: border-color 0.2s ease-in-out;
   background-color: var(--field-bg, #fff); /* Example background color */
-}
-
-.input:focus {
-  border-color: var(--primary-color, #007bff); /* Example focus color */
-}
-
-/* Validation states */
-.invalid {
-  border-color: var(--danger-color, #dc3545); /* Example invalid color */
-}
-
-.valid {
-  border-color: var(--success-color, #28a745); /* Example valid color */
 }
 
 /* Placeholder as floating label styles */
@@ -81,6 +68,15 @@
 .input:not(:focus):not(.moveUp)::placeholder {
   color: transparent; /* Hide native placeholder when floating label is active */
 }
+.input:focus {
+  border-color: var(--main-color, var(--admin-color, red));
+}
+
+.input.invalid {
+  /* border-color: #dc3545 !important; */
+  border: 2px solid #dc3545 !important;
+  padding: 14px 11px;
+}
 
 .buttonArea {
   width: max-content;
@@ -98,6 +94,20 @@
   padding: 0;
 }
 
+.errorArea {
+  width: max-content;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 10px; /* Default right position */
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none; /* Remove default button styling */
+  border: none;
+  padding: 0;
+}
 .requestMessage {
   font-size: 13px;
   color: var(--danger-color, #dc3545);

@@ -1,41 +1,47 @@
 .siderbarWrapper {
-    width: 300px;
-    height: 100dvh;
-    max-height: 100dvh;
-    min-height: 100dvh;
-    border-right: 1px solid #9b9b9b;
-    border-radius: 4px;
+  width: 300px;
+  height: 100dvh;
+  max-height: 100dvh;
+  min-height: 100dvh;
+  border-right: 1px solid #9b9b9b;
+  border-radius: 4px;
 }
 
 .siderbarWrapper.fold {
-    width: 0;
+  width: 0;
 }
 
 .siderbarWrapper.isOpen {
-    width: 300px;
-    position: absolute;
-    top: 50px;
-    left: 0;
-    height: max-content;
-    min-height: max-content;
-    border-top: 1px solid #9b9b9b;
-    border-bottom: 1px solid #9b9b9b;
-    border-top-left-radius: none;
-    border-bottom-left-radius: none;
+  width: 300px;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  height: max-content;
+  min-height: max-content;
+  border-top: 1px solid #9b9b9b;
+  border-bottom: 1px solid #9b9b9b;
+  border-top-left-radius: none;
+  border-bottom-left-radius: none;
 }
 
 .sidebarHeader {
-    background-color: #fff;
-    height: 100%;
-    padding: 10px 16px;
+  background-color: #fff;
+  height: 100%;
+  padding: 10px 16px;
 }
 
 .sidebarLine {
-    padding: 4px 8px;
-    border-radius: 4px;
-    cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .sidebarLine:hover {
-    background-color: #d1d1d1;
+  background-color: #d1d1d1;
+}
+
+.line {
+  height: 1px;
+  width: 100%;
+  border-bottom: 1px dotted #9b9b9b;
 }

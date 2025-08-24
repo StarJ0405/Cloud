@@ -155,19 +155,25 @@ function Span({
         width: width,
         minWidth,
         maxWidth,
-        fontWeight: weight || fontWeight || "inherit",
+        fontWeight:
+          weight || fontWeight || (!className ? "inherit" : undefined),
         fontFamily: font || fontFamily,
-        fontSize: fontSize || "inherit",
+        fontSize:
+          props_fontSize || size
+            ? fontSize
+            : !className
+            ? "inherit"
+            : undefined,
         fontStyle: i ? "italic" : fontStyle ? fontStyle : "normal",
         textIndent: textIndent,
         color,
-        // textDecoration: textDecoration ? textDecoration : null,
+        textDecoration,
         verticalAlign: verticalAlign || "middle",
         whiteSpace: whiteSpace,
         textAlign: textAlign ? textAlign : undefined,
         backgroundColor: backgroundColor,
         borderRadius: borderRadius,
-        cursor: cursor ? "pointer" : "inherit",
+        cursor: cursor ? "pointer" : !className ? "inherit" : undefined,
         lineHeight: lineHeight,
         height: height,
         maxHeight: maxHeight,
@@ -178,7 +184,7 @@ function Span({
         textOverflow: lineClamp ? "ellipsis" : textOverflow,
         overflowWrap: overflowWrap,
         position,
-        textDecorationLine: textDecoration || textDecorationLine || undefined,
+        textDecorationLine,
         top,
         right,
         bottom,

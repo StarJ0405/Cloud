@@ -28,7 +28,10 @@ const InputTextArea = forwardRef(
       // Removed: type, // Not applicable for textarea
       noWhiteSpace = false,
       onKeyDown,
-      feedback = "",
+      feedback: init_feedback = "",
+      feedbackStyle,
+      feedbackClassName,
+      feedbackHide,
       validable = true,
       maxLength, // MaxLength is valid for textarea
       // Removed: max, min, // Not applicable for textarea
@@ -42,7 +45,8 @@ const InputTextArea = forwardRef(
       focus = false,
       onBlur,
       onFocus,
-      resize = "none",
+      hideValid = true,
+      scrollMarginTop,
     }: // Removed: hidePasswordChange, // Not applicable for textarea
     {
       id?: string;
@@ -57,6 +61,9 @@ const InputTextArea = forwardRef(
       noWhiteSpace?: boolean;
       onKeyDown?: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void; // Changed event type
       feedback?: string;
+      feedbackStyle?: React.CSSProperties;
+      feedbackClassName?: React.HTMLAttributes<HTMLDivElement>["className"];
+      feedbackHide?: boolean;
       validable?: boolean;
       maxLength?: number;
       // max?: number; min?: number; // Removed
@@ -70,8 +77,9 @@ const InputTextArea = forwardRef(
       focus?: boolean;
       onBlur?: (event: React.FocusEvent<HTMLTextAreaElement>) => void; // Changed event type
       onFocus?: (event: React.FocusEvent<HTMLTextAreaElement>) => void; // Changed event type
-      resize?: CSSProperties["resize"];
       // hidePasswordChange?: boolean; // Removed
+      hideValid?: boolean;
+      scrollMarginTop?: CSSProperties["scrollMarginTop"];
     },
     ref
   ) => {
@@ -81,9 +89,7 @@ const InputTextArea = forwardRef(
     const [value, setValue] = useState(props_value);
     const [isValid, setValid] = useState(true);
     const [isEmpty, setEmpty] = useState(true);
-    const [isMounted, setMounted] = useState(false);
-
-    useEffect(() => setMounted(true), []);
+    const [feedback, setFeedBack] = useState(init_feedback);
 
     const onChange = (inputValue: string) => {
       let processedValue: string = inputValue;
@@ -176,14 +182,7 @@ const InputTextArea = forwardRef(
       },
     }));
 
-    const defaultTextAreaStyle: CSSProperties = {
-      boxShadow: "none",
-      borderRadius: "0",
-      border: "1px solid var(--line-color, #ccc)", // Use CSS variable with fallback
-    };
-
     const textareaClasses = clsx(
-      className,
       "notranslate",
       styles.textarea, // Apply the CSS Module class for textarea
       {
@@ -191,14 +190,14 @@ const InputTextArea = forwardRef(
         [styles.valid]: validable && !isEmpty && isValid,
         [styles.moveUp]: !isEmpty, // Apply moveUp class based on value presence
         [styles.mobileWrap]: size === "sm", // Re-using for small styling if needed
-      }
+      },
+      className
     );
 
     const mergedTextAreaStyle = {
-      resize,
-      ...defaultTextAreaStyle,
       ...style,
       ...(width ? { width: width } : {}),
+      ...(scrollMarginTop ? { scrollMarginTop } : {}),
     };
 
     return (
@@ -211,7 +210,10 @@ const InputTextArea = forwardRef(
             {label}
           </label>
         )}
-        <div className={styles.inputTextWrap}>
+        <div
+          className={styles.inputTextWrap}
+          style={{ width: width || "100%" }}
+        >
           <textarea
             id={id}
             className={textareaClasses}
@@ -232,7 +234,7 @@ const InputTextArea = forwardRef(
             rows={rows} // Apply rows prop
           />
 
-          {placeHolder && (
+          {placeHolder && !value && (
             <div className={styles.placeHolderArea}>
               <div className={styles.placeHolder}>{t(placeHolder)}</div>
             </div>
@@ -240,7 +242,7 @@ const InputTextArea = forwardRef(
 
           {/* Password eye icon removed as it's not applicable for textarea */}
         </div>
-        {validable && !isEmpty && !isValid && feedback && (
+        {/* {validable && !isEmpty && !isValid && feedback && (
           <div
             className={clsx(styles.requestMessage, {
               [styles.active]: !isValid,
@@ -248,7 +250,7 @@ const InputTextArea = forwardRef(
           >
             {t(feedback)}
           </div>
-        )}
+        )} */}
       </div>
     );
   }

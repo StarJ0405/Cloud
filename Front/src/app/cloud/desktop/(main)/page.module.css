@@ -1,0 +1,165 @@
+.siderbarWrapper {
+  width: 300px;
+  max-width: 300px;
+  overflow-x: hidden;
+  height: 100dvh;
+  max-height: 100dvh;
+  min-height: 100dvh;
+  border-right: 1px solid #9b9b9b;
+  border-radius: 4px;
+}
+
+.siderbarWrapper.fold {
+  width: 0;
+}
+
+.siderbarWrapper.isOpen {
+  width: 300px;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  height: max-content;
+  min-height: max-content;
+  border-top: 1px solid #9b9b9b;
+  border-bottom: 1px solid #9b9b9b;
+  border-top-left-radius: none;
+  border-bottom-left-radius: none;
+}
+
+.sidebarHeader {
+  background-color: #fff;
+  height: 100%;
+  padding: 10px 16px;
+}
+
+.sidebarLine {
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.sidebarLine:hover {
+  background-color: #d1d1d1;
+}
+
+.line {
+  height: 1px;
+  width: 100%;
+  border-bottom: 1px dotted #9b9b9b;
+}
+
+.header {
+  padding: 16px 25px 0 25px;
+}
+.headerLabel {
+  font-weight: 400;
+  font-size: 18px;
+  color: #222;
+}
+.headerLabel.select {
+  font-weight: 700;
+}
+
+.searchWrapper {
+  width: 300px;
+  position: relative;
+  background-color: #eff1f6;
+  border-radius: 4px;
+}
+
+.search {
+  padding: 8px 34px;
+  width: 300px;
+  border: none;
+  font-size: 12px;
+  font-weight: 400;
+  background-color: #eff1f6;
+  border-radius: 4px;
+}
+
+.placeHolder {
+  padding: 0px 24px;
+  font-size: 12px;
+  font-weight: 400;
+}
+.clientWrapper {
+  padding: 16px 25px;
+}
+.underline {
+  border-bottom: 1px solid #d0d0d0;
+  margin: 16px 0;
+}
+
+.upload {
+  background-color: #4078ff;
+  color: #fff;
+  border-radius: 4px;
+  padding: 8px;
+  width: max-content;
+  display: flex;
+  gap: 6px;
+}
+.upload:hover {
+  background-color: rgb(56, 112, 248);
+}
+
+.checkboxAllWrapper {
+  padding: 8px;
+  background-color: #eff1f6;
+  border-radius: 4px;
+}
+
+.buttonWrapper {
+  padding: 8px;
+  background-color: #eff1f6;
+  border-radius: 4px;
+  color: #222;
+  font-weight: 700;
+  display: flex;
+  gap: 6px;
+  cursor: pointer;
+}
+.updownWarpper {
+  padding: 4px;
+}
+.buttonWrapper:hover {
+  background-color: #e6e8ed;
+}
+
+.iconWrapper {
+  padding: 8px 4px;
+  cursor: pointer;
+}
+
+.listWrapper {
+  font-weight: 500;
+  font-size: 12px;
+  color: #222;
+  cursor: pointer;
+  position: relative;
+}
+
+.dropdown {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(10px);
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  padding: 6px;
+  width: max-content;
+  z-index: 2;
+  background-color: #fff;
+}
+
+.dropdownLabel {
+  position: relative;
+  padding: 8px 28px 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #222;
+}
+.dropdownLabel.select {
+  font-weight: 700;
+  color: #4078ff;
+}

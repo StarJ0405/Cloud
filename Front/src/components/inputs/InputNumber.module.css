@@ -55,7 +55,7 @@
 
 .input.borderless {
   border-color: transparent;
-  background-color: transparent;
+  /* background-color: transparent; */
 }
 
 .input.hideLeftArrow {
@@ -91,12 +91,12 @@
   height: 40px;
   border: 1px solid var(--line-color, #ccc);
   cursor: pointer;
-  background-color: var(--button-bg, #f0f0f0);
+  background-color: var(--button-bg, #fff);
   transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
 }
 
-.leftArrow:hover,
-.rightArrow:hover {
+.leftArrow:hover:not(.mobile),
+.rightArrow:hover:not(.mobile) {
   background-color: var(--button-hover-bg, #e0e0e0);
 }
 

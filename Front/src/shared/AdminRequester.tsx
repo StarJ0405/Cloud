@@ -6,7 +6,7 @@ const mode = process.env.REACT_APP_MODE;
 
 const origin = mode
   ? process.env["NEXT_PUBLIC_BACK_" + mode.toUpperCase()] ||
-  process.env.NEXT_PUBLIC_BACK
+    process.env.NEXT_PUBLIC_BACK
   : process.env.NEXT_PUBLIC_BACK;
 
 class _AdminRequester {
@@ -129,7 +129,7 @@ class _AdminRequester {
             resolve(result);
           });
       });
-    } catch (e) { }
+    } catch (e) {}
   }
   async put(url: string, data: any) {
     let instance = this.instance;
@@ -157,7 +157,7 @@ class _AdminRequester {
             resolve(result);
           });
       });
-    } catch (e) { }
+    } catch (e) {}
   }
 
   async delete(url: string, data: any) {
@@ -193,10 +193,18 @@ class _AdminRequester {
             resolve(result);
           });
       });
-    } catch (e) { }
+    } catch (e) {}
   }
-
-  // 회원 관련  
+  // 관리자 관련
+  async login(data: any, callback?: Function): Promise<string | any> {
+    if (callback) callback(await this.post(`/auth`, data));
+    else return await this.post(`/auth`, data);
+  }
+  async getCurrentUser(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/users/me`, data));
+    else return await this.get(`/users/me`, data);
+  }
+  // 회원 관련
   async getUsers(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/users`, data));
     else return await this.get(`/users`, data);
@@ -209,7 +217,7 @@ class _AdminRequester {
     if (callback) callback(await this.delete(`/users/${id}`, data));
     else return await this.delete(`/users/${id}`, data);
   }
-  async inviteUser(data?:any,callback?:Function):Promise<any>{
+  async inviteUser(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.post(`/users/invite`, data));
     else return await this.post(`/users/invite`, data);
   }
@@ -238,4 +246,3 @@ if (process.env.NEXT_PUBLIC_DEV) {
 }
 
 export { adminRequester };
-

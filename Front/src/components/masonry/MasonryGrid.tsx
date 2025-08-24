@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 import Masonry from "react-masonry-css";
 import style from "./MasonryGrid.module.css";
 

@@ -1,4 +1,26 @@
-declare interface Pageable {
+interface ExcelReadableColumn {
+  attr: string;
+  code: string;
+}
+interface ExcelWritableColumn {
+  text: string;
+  wpx?: number;
+  Cell?: ({ cell, row, index }) => any;
+  code?: string;
+  style?: {
+    common?: any;
+    col?: any;
+    header?: any;
+  };
+}
+interface ExcelSheet {
+  name?: text;
+  list?: any[];
+  empty?: [];
+  header?: ExcelWritableColumn[];
+}
+
+interface Pageable {
   content: any[];
   totalPages: number;
   pageSize: number;
@@ -8,9 +30,9 @@ declare interface Pageable {
   NumberOfElements: number;
 }
 
-declare interface ComponentProps<T extends HTMLElement>
+interface ComponentProps<T extends HTMLElement>
   extends React.CSSProperties,
-  React.HTMLAttributes<T> {
+    React.HTMLAttributes<T> {
   Ref?: Ref<T> | undefined;
 }
 

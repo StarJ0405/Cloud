@@ -1,6 +1,6 @@
 import clsx from "classnames";
-import style from "./FlexChild.module.css";
 import { CSSProperties } from "react";
+import style from "./FlexChild.module.css";
 
 function FlexChild({
   parentclass,
@@ -57,6 +57,7 @@ function FlexChild({
   boxShadow,
   zIndex,
   flexShrink,
+  scrollMarginTop,
   hidden,
   onClick,
   onContextMenu,
@@ -155,6 +156,7 @@ function FlexChild({
         color,
         flexShrink,
         boxShadow,
+        scrollMarginTop,
         ...getDirectionalStyles(), // 방향성 스타일 적용
       }}
       hidden={hidden}

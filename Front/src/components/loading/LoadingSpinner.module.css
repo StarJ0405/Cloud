@@ -14,6 +14,14 @@
   border-radius: 50%;
   animation: spinnerRotate 0.8s linear infinite;
 }
+.spin {
+  top: 0;
+  left: 0%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: spinnerRotate 0.8s linear infinite;
+}
 
 @keyframes spinnerRotate {
   from {

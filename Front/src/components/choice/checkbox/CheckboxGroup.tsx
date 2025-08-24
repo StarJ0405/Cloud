@@ -56,7 +56,10 @@ export const defaultCheckboxImages = {
   off: "/resources/images/checkbox_off.png",
   onHover: "/resources/images/checkbox_on.png",
   offHover: "/resources/images/checkbox_hover.png",
+  // off: "/resources/images/login_radio_off.png",
+  // on: "/resources/icons/radio_on.svg",
 };
+
 const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   name,
   children,

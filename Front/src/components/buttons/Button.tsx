@@ -2,11 +2,13 @@
 import P from "@/components/P/P";
 
 import clsx from "clsx";
-import { useRef } from "react";
+import { ChangeEventHandler, useRef } from "react";
+import FlexChild from "../flex/FlexChild";
 import LoadingSpinner from "../loading/LoadingSpinner";
 import styles from "./Button.module.css";
 function Button({
   id,
+  hidden,
   className,
   width,
   height,
@@ -37,7 +39,7 @@ function Button({
   right,
   disabled,
   onClick,
-  onChange,
+  onFileChange,
   onMouseDown,
   type = "button",
   styleType = "main",
@@ -47,8 +49,8 @@ function Button({
 }: ComponentProps<HTMLButtonElement> & {
   type?: "button" | "file";
   disabled?: boolean;
-  onChange?: any;
-  styleType?: "main" | "admin" | "reverse" | "white" | "admin2" | "none";
+  onFileChange?: React.ChangeEventHandler<HTMLInputElement>;
+  styleType?: "main" | "admin" | "reverse" | "white" | "admin2";
   isLoading?: boolean;
 }) {
   const inputRef = useRef<any>(null);
@@ -86,6 +88,7 @@ function Button({
   };
   return (
     <button
+      hidden={hidden}
       id={id}
       disabled={disabled}
       style={{
@@ -121,19 +124,21 @@ function Button({
       onMouseDown={onMouseDown}
       className={clsx(
         styles.button,
-        className,
         "notranslate",
         [styles[styleType]],
         {
           [styles.disabled]: disabled,
-        }
+        },
+        className
       )}
     >
       {type === "file" && (
-        <input ref={inputRef} type="file" hidden onChange={onChange} />
+        <input ref={inputRef} type="file" hidden onChange={onFileChange} />
       )}
-      {isLoading ? (
-        <LoadingSpinner />
+      {false ? (
+        <FlexChild justifyContent="center">
+          <LoadingSpinner height={21} width={21} />
+        </FlexChild>
       ) : typeof children === "string" ? (
         <P fontSize={fontSize} fontWeight={fontWeight} color={color}>
           {children}

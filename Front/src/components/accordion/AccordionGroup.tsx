@@ -4,6 +4,7 @@ import React, {
   forwardRef,
   ReactNode,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -36,6 +37,7 @@ interface AccordionGroupProps {
   children: ReactNode;
   className?: string; // 추가: 외부에서 스타일을 위한 클래스명
   style?: React.CSSProperties; // 추가: 외부에서 스타일을 위한 인라인 스타일
+  onChange?: (actives: any[]) => void;
 }
 
 /**
@@ -54,6 +56,7 @@ export const AccordionGroup = forwardRef<HTMLDivElement, AccordionGroupProps>(
       children,
       className,
       style,
+      onChange,
     },
     ref
   ) => {
@@ -113,6 +116,9 @@ export const AccordionGroup = forwardRef<HTMLDivElement, AccordionGroupProps>(
       [actives, setActive, unique, registerChild, unregisterChild]
     );
 
+    useEffect(() => {
+      if (onChange) onChange(Array.from(actives));
+    }, [actives]);
     return (
       <AccordionGroupContext.Provider value={contextValue}>
         <div

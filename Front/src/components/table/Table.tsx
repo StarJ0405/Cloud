@@ -572,8 +572,23 @@ const PageableTable = forwardRef(
         return selectable ? selected.flat() : data;
       },
       async getAllData() {
-        return await onSearch(condition);
+        const data = await onSearch(condition);
+        return onReprocessing ? onReprocessing(data) : data;
       },
+      async getPageData(pageNumber: number, pageSize?: number) {
+        const data = await onSearch(
+          _.merge(condition || {}, {
+            pageNumber: pageNumber || 0,
+            pageSize: pageSize || limit,
+          })
+        );
+        return onReprocessing ? onReprocessing(data) : data;
+      },
+      // getSelectCount() {
+      //   return selected.reduce((acc, now) => {
+      //     return acc + now.length;
+      //   }, 0);
+      // },
     }));
     return (
       <FlexChild
@@ -658,6 +673,7 @@ const PageableTable = forwardRef(
                         styles.headerCell,
                         styles.checkbox
                       )}
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <CheckboxAll />
                     </FlexChild>
@@ -731,6 +747,7 @@ const PageableTable = forwardRef(
                             styles.columnCell,
                             styles.checkbox
                           )}
+                          onClick={(e) => e.stopPropagation()}
                         >
                           <CheckboxChild id={String(page * limit + ridx)} />
                         </FlexChild>
@@ -1180,6 +1197,7 @@ const ScrollableTable = forwardRef(
                         styles.headerCell,
                         styles.checkbox
                       )}
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <CheckboxAll />
                     </FlexChild>
@@ -1251,6 +1269,7 @@ const ScrollableTable = forwardRef(
                             styles.columnCell,
                             styles.checkbox
                           )}
+                          onClick={(e) => e.stopPropagation()}
                         >
                           <CheckboxChild id={String(ridx)} />
                         </FlexChild>

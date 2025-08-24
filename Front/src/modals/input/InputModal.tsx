@@ -10,18 +10,30 @@ import NiceModal from "@ebay/nice-modal-react";
 import { useEffect, useRef, useState } from "react";
 import ModalBase from "../ModalBase";
 import style from "./InputModal.module.css";
+import InputTextArea from "@/components/inputs/InputTextArea";
 
 interface InputProps {
-  value: any,
-  type?: HTMLInputElement['type'],
+  value: any;
+  type?: HTMLInputElement["type"] | "text-area";
   label: React.ReactNode;
-  placeHolder?: HTMLInputElement['placeholder'];
-  regExp?: { exp: { test: (value: any) => boolean } }[]
+  placeHolder?: HTMLInputElement["placeholder"];
+  regExp?: { exp: { test: (value: any) => boolean } }[];
 }
 const InputModal = NiceModal.create(
-  ({ onConfirm, onCancel, message, input = [], cancelText, confirmText }: {
-    onConfirm: (value: any | any[]) => void, onCancel: () => void, message: string, input: InputProps | InputProps[],
-    cancelText: string, confirmText: string;
+  ({
+    onConfirm,
+    onCancel,
+    message,
+    input = [],
+    cancelText,
+    confirmText,
+  }: {
+    onConfirm: (value: any | any[]) => void;
+    onCancel: () => void;
+    message: string;
+    input: InputProps | InputProps[];
+    cancelText: string;
+    confirmText: string;
   }) => {
     const [withHeader, withFooter] = [false, false];
     const [width, height] = ["min(80%, 400px)", "auto"];
@@ -35,11 +47,11 @@ const InputModal = NiceModal.create(
     const inputs = useRef<any[]>([]);
 
     const onConfirmClick = async () => {
-      const { isValid, index } = (await validateInputs(inputs.current))
+      const { isValid, index } = await validateInputs(inputs.current);
       if (!isValid) return toast({ message: `${index}값이 잘못되었습니다.` });
       if (isBlocked) return;
       setIsBlocked(true);
-      const value = inputs.current.map(input => input.getValue());
+      const value = inputs.current.map((input) => input.getValue());
 
       if (onConfirm) {
         let isAsyncFn =
@@ -63,7 +75,9 @@ const InputModal = NiceModal.create(
       }
       modal.current.close();
     };
-    useEffect(() => { inputs?.current[0]?.focus?.() }, [])
+    useEffect(() => {
+      inputs?.current[0]?.focus?.();
+    }, []);
     return (
       <ModalBase
         zIndex={10055}
@@ -91,25 +105,48 @@ const InputModal = NiceModal.create(
                 {message}
               </P>
             </FlexChild>
-            {(Array.isArray(input) ? input : [input]).map((value, index) => <FlexChild key={`inputs_${index}_${value.label}`}>
-              <VerticalFlex gap={4}>
-                <FlexChild>
-                  <P
-                    size={isMobile ? 14 : 16}
-                    color={"#494949"}
-                  >{value.label}</P>
-                </FlexChild>
-                <FlexChild>
-                  <Input width={'100%'} ref={(el) => { inputs.current[index] = el }} value={value.value} type={value?.type} placeHolder={value.placeHolder} regExp={value.regExp || []} onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      const max = (Array.isArray(input) ? input : [input]).length;
-                      if (max - 1 === index) onConfirmClick()
-                      else inputs.current[index + 1].focus()
-                    }
-                  }} />
-                </FlexChild>
-              </VerticalFlex>
-            </FlexChild>)}
+            {(Array.isArray(input) ? input : [input]).map((value, index) => (
+              <FlexChild key={`inputs_${index}_${value.label}`}>
+                <VerticalFlex gap={4}>
+                  <FlexChild>
+                    <P size={isMobile ? 14 : 16} color={"#494949"}>
+                      {value.label}
+                    </P>
+                  </FlexChild>
+                  <FlexChild>
+                    {value.type === "text-area" ? (
+                      <InputTextArea
+                        width={"100%"}
+                        ref={(el) => {
+                          inputs.current[index] = el;
+                        }}
+                        value={value.value}
+                        placeHolder={value.placeHolder}
+                      />
+                    ) : (
+                      <Input
+                        width={"100%"}
+                        ref={(el) => {
+                          inputs.current[index] = el;
+                        }}
+                        value={value.value}
+                        type={value?.type}
+                        placeHolder={value.placeHolder}
+                        regExp={value.regExp || []}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            const max = (Array.isArray(input) ? input : [input])
+                              .length;
+                            if (max - 1 === index) onConfirmClick();
+                            else inputs.current[index + 1].focus();
+                          }
+                        }}
+                      />
+                    )}
+                  </FlexChild>
+                </VerticalFlex>
+              </FlexChild>
+            ))}
             <FlexChild>
               <HorizontalFlex justifyContent={"center"}>
                 {cancelText && (

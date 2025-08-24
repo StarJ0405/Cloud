@@ -19,7 +19,7 @@
   text-align: left;
   font-weight: 500;
 }
-.spinnerHeader{
+.spinnerHeader {
   padding: 15px;
 }
 .spinnerColumnsWrapper {
@@ -32,7 +32,7 @@
   position: relative; /* 선택 라인이 wrapper를 기준으로 위치할 경우 (아니면 각 column에) */
   height: 300px;
 }
-.spinnerColumnLine{
+.spinnerColumnLine {
   display: flex;
   flex-direction: column;
   max-height: 300px;
@@ -41,11 +41,10 @@
   padding: 135px 0;
 }
 
-.spinnerColumn{
- padding: 7px; 
- text-align: center;
+.spinnerColumn {
+  padding: 7px;
+  text-align: center;
 }
-
 
 /* 선택된 항목을 강조하는 라인 (가운데 1개 항목 높이만큼) */
 /* 이 라인들이 컬럼 중앙에 오도록 해야 합니다. */

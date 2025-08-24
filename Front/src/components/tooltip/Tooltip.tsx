@@ -125,7 +125,6 @@ const Tooltip = ({
           mouseY < tooltipRect.top ||
           mouseY > tooltipRect.bottom)
       ) {
-        // console.log("close!!");
         if (autoClose) close();
       }
     };
@@ -150,7 +149,6 @@ const Tooltip = ({
           mouseY < tooltipRect.top ||
           mouseY > tooltipRect.bottom)
       ) {
-        // console.log("close!!");
         close();
       }
     };

@@ -15,6 +15,7 @@ import style from "./InputNumber.module.css";
 
 // Props type definition for better type safety
 interface InputNumberProps {
+  id?: React.HTMLAttributes<HTMLInputElement>["id"];
   name?: string;
   value?: number; // The canonical numeric value
   min?: number;
@@ -46,6 +47,7 @@ interface InputNumberProps {
   height?: CSSProperties["height"];
   width?: CSSProperties["width"];
   style?: CSSProperties;
+  borderColor?: React.CSSProperties["borderColor"];
 }
 interface refInterface {
   getName: () => string;
@@ -57,6 +59,7 @@ interface refInterface {
 const InputNumber = forwardRef<refInterface, InputNumberProps>((props, ref) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const {
+    id,
     min = 0,
     max = 99999,
     placeHolder,
@@ -81,6 +84,7 @@ const InputNumber = forwardRef<refInterface, InputNumberProps>((props, ref) => {
     height,
     width = 60,
     style: componentStyle,
+    borderColor,
   } = props;
 
   const { t } = useTranslation();
@@ -218,6 +222,7 @@ const InputNumber = forwardRef<refInterface, InputNumberProps>((props, ref) => {
     // or if the *formatted display* value is out of sync and input is not focused.
     if (value !== clampedPropValue) {
       setValue(clampedPropValue);
+      props.onChange?.(clampedPropValue);
       if (!inputRef.current?.matches(":focus")) {
         setDisplayValue(formatNumberForDisplay(clampedPropValue));
       }
@@ -380,12 +385,14 @@ const InputNumber = forwardRef<refInterface, InputNumberProps>((props, ref) => {
       >
         {!hideArrow && !hideLeftArrow && (
           <div
+            id={id ? `${id}_left` : undefined}
             onClick={onMinusClick}
             className={clsx(style.leftArrow, {
               [style.active]: !disabled && !minBlock,
               [style.borderless]: borderless,
+              [style.mobile]: isMobile,
             })}
-            style={{ ...arrowStyle, ...(arrowStyle?.left as any) }}
+            style={{ borderColor, ...arrowStyle, ...(arrowStyle?.left as any) }}
           >
             <div className={style.center}>
               {/* Minus icon SVG */}
@@ -422,6 +429,7 @@ const InputNumber = forwardRef<refInterface, InputNumberProps>((props, ref) => {
               </p>
             )}
             <input
+              id={id}
               type="text"
               inputMode={inputMode}
               pattern={inputPattern}
@@ -475,12 +483,18 @@ const InputNumber = forwardRef<refInterface, InputNumberProps>((props, ref) => {
         </div>
         {!hideArrow && !hideRightArrow && (
           <div
+            id={id ? `${id}_right` : undefined}
             onClick={onPlusClick}
             className={clsx(style.rightArrow, {
               [style.active]: !disabled && !maxBlock,
               [style.borderless]: borderless,
+              [style.mobile]: isMobile,
             })}
-            style={{ ...arrowStyle, ...(arrowStyle?.right as any) }}
+            style={{
+              borderColor,
+              ...arrowStyle,
+              ...(arrowStyle?.right as any),
+            }}
           >
             <div className={style.center}>
               {/* Plus icon SVG */}

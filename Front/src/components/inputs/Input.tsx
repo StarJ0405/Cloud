@@ -14,12 +14,13 @@ import { useTranslation } from "react-i18next";
 
 // Import the CSS Module
 import styles from "./Input.module.css"; // <--- NEW
+import useClientEffect from "@/shared/hooks/useClientEffect";
 
 // Inline SVG for the 'eye' (hide password) icon
 const EyeSVG = (
   <svg
-    width="18"
-    height="14"
+    width="20"
+    height="20"
     viewBox="0 0 18 14"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -55,6 +56,27 @@ const ShowEyeSVG = (
   </svg>
 );
 
+const ErrorSVG = (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 22 21"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M8.06641 2.17773C9.37004 -0.0802264 12.63 -0.080228 13.9336 2.17773L21.0566 14.5156C22.3601 16.7736 20.7303 19.5957 18.123 19.5957H3.87695C1.26973 19.5957 -0.360139 16.7736 0.943359 14.5156L8.06641 2.17773Z"
+      fill="white"
+      stroke="#EA4335"
+      strokeWidth="0.967698"
+    />
+    <path
+      d="M12.4128 5.80615L12.1718 12.8796H9.94632L9.69117 5.80615H12.4128ZM11.052 16.225C10.2865 16.225 9.66282 15.6154 9.67699 14.85C9.66282 14.0987 10.2865 13.4891 11.052 13.4891C11.7749 13.4891 12.427 14.0987 12.427 14.85C12.427 15.6154 11.7749 16.225 11.052 16.225Z"
+      fill="#EA4335"
+    />
+  </svg>
+);
+
 const Input = forwardRef(
   (
     {
@@ -62,6 +84,7 @@ const Input = forwardRef(
       regExp,
       placeHolder,
       className, // This will be merged with styles.input
+      placeHolderClassName,
       label,
       style, // This will be merged with defaultInputStyle
       width,
@@ -69,7 +92,11 @@ const Input = forwardRef(
       type = "text", // text, number, password
       noWhiteSpace = false,
       onKeyDown,
-      feedback = "",
+      feedback: init_feedback = "",
+      feedbackStyle,
+      feedbackClassName,
+      feedbackHide,
+      onFeedBackChange,
       validable = true,
       maxLength,
       max = 9999,
@@ -84,12 +111,14 @@ const Input = forwardRef(
       onBlur,
       onFocus,
       hidePasswordChange = false,
+      hideValid = true,
       scrollMarginTop,
     }: {
       id?: string;
-      regExp?: { exp: { test: (value: any) => boolean } }[];
+      regExp?: { exp: { test: (value: any) => boolean }; feedback?: string }[];
       placeHolder?: string;
-      className?: string;
+      className?: React.HTMLAttributes<HTMLInputElement>['className'];
+      placeHolderClassName?: React.HTMLAttributes<HTMLInputElement>['className'];
       label?: string;
       style?: CSSProperties;
       width?: CSSProperties["width"];
@@ -98,6 +127,10 @@ const Input = forwardRef(
       noWhiteSpace?: boolean;
       onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
       feedback?: string;
+      feedbackStyle?: React.CSSProperties;
+      feedbackClassName?: React.HTMLAttributes<HTMLDivElement>["className"];
+      feedbackHide?: boolean;
+      onFeedBackChange?: (feedback: string) => void;
       validable?: boolean;
       maxLength?: number;
       max?: number;
@@ -115,6 +148,7 @@ const Input = forwardRef(
       onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
       onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
       hidePasswordChange?: boolean;
+      hideValid?: boolean;
       scrollMarginTop?: CSSProperties["scrollMarginTop"];
     },
     ref
@@ -127,7 +161,7 @@ const Input = forwardRef(
     const [isEmpty, setEmpty] = useState(true);
     const [hidePassword, setHidePassword] = useState(true);
     const [isMounted, setMounted] = useState(false);
-
+    const [feedback, setFeedBack] = useState(init_feedback);
     useEffect(() => setMounted(true), []);
 
     const onChange = (inputValue: string) => {
@@ -176,6 +210,15 @@ const Input = forwardRef(
     useEffect(() => {
       if (focus) input?.current?.focus?.();
     }, [focus]);
+    useClientEffect(() => {
+      setReadOnly(props_readOnly);
+    }, [props_readOnly]);
+    useEffect(() => {
+      if (onFeedBackChange)
+        if (validable && !isEmpty && !isValid && feedback) {
+          onFeedBackChange(feedback);
+        } else onFeedBackChange("");
+    }, [validable, isEmpty, isValid, feedback, onFeedBackChange]);
 
     useEffect(() => {
       const expCheck = async () => {
@@ -192,8 +235,8 @@ const Input = forwardRef(
             } else {
               eachValidationResult = re.exp.test(value);
             }
-
             if (eachValidationResult === false) {
+              setFeedBack(init_feedback || re?.feedback || "");
               return false;
             }
             return true;
@@ -278,14 +321,7 @@ const Input = forwardRef(
       },
     }));
 
-    const defaultInputStyle: CSSProperties = {
-      boxShadow: "none",
-      borderRadius: "0",
-      border: "1px solid var(--line-color, #ccc)", // Use CSS variable with fallback
-    };
-
     const inputClasses = clsx(
-      className,
       "notranslate", // Keep this if it's a global class for translation exclusion
       styles.input, // Apply the CSS Module class
       {
@@ -294,11 +330,11 @@ const Input = forwardRef(
         [styles.moveUp]: !isEmpty, // Apply moveUp class based on value presence
         // [styles.withPlaceHolder]: !!placeHolder, // Not strictly needed if placeHolderArea is always present
         [styles.mobileInput]: size === "sm", // Example: map size prop to mobileInput class for small size
-      }
+      },
+      className
     );
 
     const mergedInputStyle = {
-      ...defaultInputStyle,
       ...style,
       ...(width ? { width } : {}),
       ...(scrollMarginTop ? { scrollMarginTop } : {}),
@@ -310,7 +346,7 @@ const Input = forwardRef(
     return (
       <div
         className={clsx(styles.wrap, { [styles.mobileWrap]: size === "sm" })}
-        style={{ width: width || "100%" }} // Keep width prop for the wrapper
+        style={{ width: width || "max-content" }} // Keep width prop for the wrapper
       >
         {label && (
           <label htmlFor={id} className={styles.labelId}>
@@ -339,40 +375,50 @@ const Input = forwardRef(
             name={name}
           />
 
-          {placeHolder && !value && (
+          {placeHolder && !value && value !== 0 && (
             <div className={styles.placeHolderArea}>
-              <div
-                className={clsx(styles.placeHolder, {
-                  // styles.moveUp is now applied to the input based on !isEmpty
-                  // The CSS rule `input:focus + .placeHolderArea .placeHolder` and
-                  // `input.moveUp + .placeHolderArea .placeHolder` handles the movement.
-                })}
-              >
-                {t(placeHolder)}
-              </div>
+              <div className={clsx(styles.placeHolder,placeHolderClassName)}>{t(placeHolder)}</div>
             </div>
           )}
 
+          {!isValid && !isEmpty && !hideValid ? (
+            <div
+              className={styles.errorArea}
+              style={{
+                right: 10,
+              }}
+            >
+              {ErrorSVG}
+            </div>
+          ) : (
+            <></>
+          )}
           {type === "password" && !hidePasswordChange && (
             <div
               onClick={() => setHidePassword(!hidePassword)}
               className={styles.buttonArea}
               style={{
                 right:
-                  validable && !isEmpty && !isValid && feedback
-                    ? "30px"
+                  validable && !isEmpty && !isValid && feedback && !hideValid
+                    ? "35px"
                     : "10px", // Adjust right based on feedback
+                // right: 10,s
               }}
             >
               {hidePassword ? EyeSVG : ShowEyeSVG}
             </div>
           )}
         </div>
-        {validable && !isEmpty && !isValid && feedback && (
+        {!feedbackHide && validable && !isEmpty && !isValid && feedback && (
           <div
-            className={clsx(styles.requestMessage, {
-              [styles.active]: !isValid,
-            })}
+            className={clsx(
+              styles.requestMessage,
+              {
+                [styles.active]: !isValid,
+              },
+              feedbackClassName
+            )}
+            style={feedbackStyle}
           >
             {t(feedback)}
           </div>

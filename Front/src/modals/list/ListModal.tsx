@@ -1,20 +1,18 @@
 import P from "@/components/P/P";
+import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Icon from "@/components/icons/Icon";
-import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 import NiceModal from "@ebay/nice-modal-react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import ModalBase from "../ModalBase";
-import Div from "@/components/div/Div";
 
 const ListModal = NiceModal.create(
   ({
     selected,
     list = [],
     onSelect,
-    onCancel,
   }: {
     selected: { label: React.ReactNode; value: string };
     list: { label: React.ReactNode; value: string }[];
@@ -29,15 +27,7 @@ const ListModal = NiceModal.create(
     const buttonText = "close";
 
     const modal = useRef<any>(null);
-    const [isBlocked, setIsBlocked] = useState(false);
-    const { isMobile } = useBrowserEvent();
 
-    const onCancelClick = () => {
-      if (onCancel) {
-        onCancel();
-      }
-      modal.current.close();
-    };
     const onSelectClick = (item: any) => {
       if (onSelect) onSelect(item);
       modal.current.close();
@@ -77,8 +67,8 @@ const ListModal = NiceModal.create(
                 }
               >
                 <HorizontalFlex>
-                  <P>{l.label}</P>
-                  {selected.label === l.label && (
+                  {typeof l.label === "string" ? <P>{l.label}</P> : l.label}
+                  {selected?.value === l.value && (
                     <Icon name="check" type="svg" size={16} />
                   )}
                 </HorizontalFlex>

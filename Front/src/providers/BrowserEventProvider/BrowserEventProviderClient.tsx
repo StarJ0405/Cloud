@@ -1,5 +1,15 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { Cookies } from "@/shared/utils/Data";
+import { usePathname } from "next/navigation";
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { useCookies } from "react-cookie";
 
 export const BrowserDetectContext = createContext<{
   deviceType: DeviceType;
@@ -8,8 +18,9 @@ export const BrowserDetectContext = createContext<{
   isMobile: boolean;
   isDeskTop: boolean;
   isTablet: boolean;
-  domain: string;
   subdomain: string;
+  isReload: boolean;
+  setIsReload: Dispatch<SetStateAction<boolean>>;
 }>({
   deviceType: "" as DeviceType,
   OS: "" as OSType,
@@ -17,8 +28,9 @@ export const BrowserDetectContext = createContext<{
   isMobile: false,
   isDeskTop: false,
   isTablet: false,
-  domain: "",
   subdomain: "",
+  isReload: false,
+  setIsReload: () => {},
 });
 
 const MOBILE_MAX_WIDTH = 768;
@@ -29,7 +41,7 @@ export default function BrowserEventProviderClient({
   initDeviceType,
   initOS,
   initWebView,
-  subdomain
+  subdomain,
 }: {
   children: React.ReactNode;
   initDeviceType: DeviceType;
@@ -40,10 +52,41 @@ export default function BrowserEventProviderClient({
   const [deviceType] = useState(initDeviceType);
   const [OS] = useState(initOS);
   const [webView] = useState(initWebView);
-  const [domain, setDomain] = useState('');
+  const [isReload, setIsReload] = useState(false);
+  const pathname = usePathname();
+  const [cookie] = useCookies([Cookies.HISTORY]);
   useEffect(() => {
-    setDomain((window?.location?.origin || "").replace(`${subdomain}.`, ''))
-  }, [])
+    const handlePopstate = () => {
+      setIsReload(true);
+    };
+    window.addEventListener("popstate", handlePopstate);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopstate);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isReload) {
+      const history = cookie?.[Cookies.HISTORY];
+      if (history) {
+        const scrollTop = history?.[pathname];
+        if (scrollTop > 0) {
+          const interval = setInterval(() => {
+            const scroll = document.getElementById("scroll");
+            if (
+              scroll &&
+              scroll.scrollHeight - scroll.clientHeight >= scrollTop
+            ) {
+              scroll.scrollTop = scrollTop;
+              setIsReload(false);
+              clearInterval(interval);
+            }
+          }, 100);
+        }
+      }
+    }
+  }, [pathname, isReload]);
   return (
     <BrowserDetectContext.Provider
       value={{
@@ -53,8 +96,9 @@ export default function BrowserEventProviderClient({
         isMobile: deviceType === "mobile",
         isDeskTop: deviceType === "desktop",
         isTablet: deviceType === "tablet",
-        domain,
         subdomain,
+        isReload,
+        setIsReload,
       }}
     >
       {children}

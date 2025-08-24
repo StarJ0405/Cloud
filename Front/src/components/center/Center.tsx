@@ -4,6 +4,7 @@ function Center({
   alignItems = "center",
   textAlign = "center",
   width,
+  innerWidth,
   padding,
   paddingTop,
   paddingRight,
@@ -22,10 +23,14 @@ function Center({
   maxWidth,
   height,
   minHeight,
+  innerHeight,
   children,
   position,
   backgroundColor,
-}: ComponentProps<HTMLDivElement>) {
+}: ComponentProps<HTMLDivElement> & {
+  innerWidth?: React.CSSProperties["width"];
+  innerHeight?: React.CSSProperties["height"];
+}) {
   const getDirectionalStyles = (): DirectionalStyleInterface => {
     const styles: DirectionalStyleInterface = {};
     // padding 처리
@@ -74,8 +79,8 @@ function Center({
       <div
         className={style.inner}
         style={{
-          // width,
-          // height,
+          width: innerWidth,
+          height: innerHeight,
           textAlign,
         }}
       >

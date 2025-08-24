@@ -9,6 +9,7 @@ import React, {
 import { CheckboxGroupContext } from "./CheckboxGroup";
 
 interface CheckboxAllProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  id?: string;
   className?: string;
   style?: React.CSSProperties;
   children?: React.ReactNode;
@@ -25,7 +26,20 @@ interface CheckboxAllProps extends React.InputHTMLAttributes<HTMLInputElement> {
  * @param {CheckboxAllProps} props - className, style, children, images
  */
 const CheckboxAll = forwardRef<HTMLInputElement, CheckboxAllProps>(
-  ({ className, style, children, onChange, images, ...rest }, ref) => {
+  (
+    {
+      id,
+      className,
+      style,
+      children,
+      width = "24px",
+      height = "24px",
+      onChange,
+      images,
+      ...rest
+    },
+    ref
+  ) => {
     const context = useContext(CheckboxGroupContext);
     const inputRef = useRef<HTMLInputElement>(null);
     const [isHovered, setIsHovered] = useState(false);
@@ -68,13 +82,14 @@ const CheckboxAll = forwardRef<HTMLInputElement, CheckboxAllProps>(
 
     return (
       <div
+        id={id}
         className={className}
         style={{
           ...style,
           position: "relative",
           display: "inline-block",
-          width: hasImages ? "24px" : undefined,
-          height: hasImages ? "24px" : undefined,
+          width: hasImages ? width : undefined,
+          height: hasImages ? height : undefined,
           cursor: "pointer",
           backgroundImage: backgroundImage,
           backgroundSize: hasImages ? "contain" : undefined,

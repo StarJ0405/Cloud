@@ -105,6 +105,7 @@ const CheckboxChild = forwardRef<HTMLInputElement, CheckboxChildProps>(
 
     return (
       <div
+        id={id}
         className={className}
         style={{
           width: hasImages ? "24px" : undefined, // 이미지 크기에 따라 조절

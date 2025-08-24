@@ -16,13 +16,14 @@ import styles from "./ToastModal.module.css";
 const ToastModal = NiceModal.create(
   ({
     message,
-    autoClose,
+    autoClose = 1000,
     icon,
     className,
     style,
     messageBoxClassName,
     messageBoxStyle,
     width,
+    withCloseButton = true,
   }: any) => {
     const modal = useModal();
     const { modal: niceModal } = useNiceModal();
@@ -88,16 +89,18 @@ const ToastModal = NiceModal.create(
         onMouseLeave={() => setHover(false)}
       >
         <VerticalFlex alignItems="flex-end" position={"relative"}>
-          <FlexChild
-            cursor={"pointer"}
-            width={"max-content"}
-            onClick={onClose}
-            position={"absolute"}
-            top={"-4px"}
-            right={"-4px"}
-          >
-            <Icon size={38} name="closeBtn2x" />
-          </FlexChild>
+          {withCloseButton && (
+            <FlexChild
+              cursor={"pointer"}
+              width={"max-content"}
+              onClick={onClose}
+              position={"absolute"}
+              top={"-4px"}
+              right={"-4px"}
+            >
+              <Icon size={38} name="closeBtn2x" />
+            </FlexChild>
+          )}
           <HorizontalFlex alignItems="flex-start" justifyContent={"center"}>
             {icon && <FlexChild width={"max-content"}>{icon}</FlexChild>}
             <FlexChild
@@ -123,7 +126,7 @@ const ToastModal = NiceModal.create(
                   {message}
                 </P>
               ) : (
-                { message }
+                message
               )}
             </FlexChild>
           </HorizontalFlex>

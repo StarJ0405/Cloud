@@ -17,6 +17,7 @@ export function middleware(req: NextRequest) {
   const mains = (process.env.NEXT_PUBLIC_MAIN_DOMAIN || "").split(",");
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-pathname", url.pathname);
+  requestHeaders.set("x-searchParams", url.search);
 
   if (
     subdomain === "www" ||

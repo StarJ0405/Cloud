@@ -1,5 +1,7 @@
 import i18n from "@/lang/i18n";
+import { saveAs } from "file-saver";
 import { RefObject } from "react";
+import * as XLSX from "xlsx";
 
 export const getCookieOption = ({
   maxAge,
@@ -17,7 +19,7 @@ export const getCookieOption = ({
   let href = window.location.hostname.replace("www.", "");
 
   const domains = (process.env.NEXT_PUBLIC_MAIN_DOMAIN || "").split(",");
-  
+
   if (domains.length > 0)
     domains.forEach((domain: string) => {
       if (href.endsWith(domain)) href = domain;
@@ -58,8 +60,8 @@ export const dataToQuery = (data: any) => {
       acc[key] = Array.isArray(data[key])
         ? data[key]
         : typeof data[key] === "object"
-          ? JSON.stringify(data[key])
-          : data[key];
+        ? JSON.stringify(data[key])
+        : data[key];
       return acc;
     }, {})
   ).toString();
@@ -270,10 +272,235 @@ export const throttle = <T extends (...args: any[]) => void>(
   };
 };
 
-export const PhoneString= (phone:string)=>{
-  phone = phone.replaceAll('-','');
-  const one = phone.slice(0,3)
-  const two = phone.slice(3,7)
+export const PhoneString = (phone: string) => {
+  phone = phone.replaceAll("-", "");
+  const one = phone.slice(0, 3);
+  const two = phone.slice(3, 7);
   const three = phone.slice(7);
-  return `${one}-${two}-${three}`
-}
+  return `${one}-${two}-${three}`;
+};
+
+export const readExcelFile = (
+  file: File,
+  header: ExcelReadableColumn[]
+): Promise<any[]> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const data = e.target?.result;
+      const workbook = XLSX.read(data, { type: "binary" });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+      const processedData = jsonData.map((row: any) => {
+        const data = header?.reduce((acc, head) => {
+          acc[head.attr] = row[head.code];
+          return acc;
+        }, {} as any);
+        return data;
+      });
+
+      resolve(processedData);
+    };
+
+    reader.onerror = reject;
+
+    reader.readAsBinaryString(file);
+  });
+};
+export const downloadExcelFile = async (
+  list: any[] = [],
+  fileName: string | undefined = undefined,
+  empty: any[] = [],
+  header: ExcelWritableColumn[] = [],
+  style: { common?: any; col?: any; header?: any } = {},
+  onSuccess = (_list: any[]) => {},
+  extraSheet: ExcelSheet[] = []
+) => {
+  extraSheet = extraSheet
+    ? Array.isArray(extraSheet)
+      ? extraSheet
+      : [extraSheet]
+    : [];
+  const pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+  const _ = require("lodash");
+  const calcWidth = (text: string) =>
+    ([...`${text}`]?.reduce(
+      (pre, acc) => pre + (pattern.test(acc) ? 17.5 : 10),
+      0
+    ) +
+      11) /
+      1.15 || 0;
+  let array: any[] = [];
+  let wpx = header.map((headerCol) => ({
+    wpx: headerCol?.wpx || calcWidth(headerCol.text),
+  }));
+
+  list.forEach((row, index) => {
+    let obj: any = {};
+    header.forEach((headerCol, ColIndex) => {
+      let value;
+      if (headerCol.Cell) {
+        value = headerCol.Cell({
+          row: row,
+          cell: row?.[headerCol?.code || ""],
+          index: index,
+        });
+      } else {
+        value =
+          row?.[headerCol?.code || ""] !== undefined
+            ? row?.[headerCol?.code || ""]
+            : "";
+      }
+      obj[headerCol.text] = _.merge(
+        {
+          ...(String(value).includes("=")
+            ? { f: value.replace("=", "") }
+            : { v: value }),
+          s: _.merge(
+            {},
+            style?.common,
+            style?.col,
+            headerCol?.style?.common,
+            headerCol?.style?.col
+          ),
+        },
+        typeof value === "number" ? { t: "n" } : {}
+      );
+      wpx[ColIndex] = {
+        wpx:
+          headerCol?.wpx ||
+          Math.max(wpx?.[ColIndex]?.wpx || 0, calcWidth(value)),
+      };
+    });
+    array.push(obj);
+  });
+  const head: any = {};
+  header.forEach(
+    (headerCol) =>
+      (head[headerCol.text] = {
+        v: headerCol.text,
+        s: _.merge(
+          {},
+          style?.common,
+          style?.header,
+          headerCol?.style?.common,
+          headerCol?.style?.header
+        ),
+      })
+  );
+  const worksheet = XLSX.utils.json_to_sheet([...empty, head, ...array], {
+    skipHeader: true,
+  });
+  // 너비 적용
+  worksheet["!cols"] = wpx;
+  // 헤더 스타일 적용
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+  try {
+    extraSheet?.forEach((sheet) => {
+      const name = sheet?.name || String(new Date().getTime()); // 추가시트 이름
+      const list = sheet?.list || []; // 추가 데이터 목록
+      const empty = sheet?.empty || []; // 상단 추가용
+      const header = sheet?.header || []; // header용
+      const pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+      const _ = require("lodash");
+      const calcWidth = (text: string) =>
+        ([...`${text}`]?.reduce(
+          (pre, acc) => pre + (pattern.test(acc) ? 17.5 : 10),
+          0
+        ) +
+          11) /
+          1.15 || 0;
+      let array: any[] = [];
+      let wpx = header.map((headerCol) => ({
+        wpx: headerCol?.wpx || calcWidth(headerCol.text),
+      }));
+
+      list.forEach((row, index) => {
+        let obj: any = {};
+        header.forEach((headerCol, ColIndex) => {
+          let value;
+          if (headerCol.Cell) {
+            value = headerCol.Cell({
+              row: row,
+              cell: row?.[headerCol?.code || ""],
+              index: index,
+            });
+          } else {
+            value =
+              row?.[headerCol?.code || ""] !== undefined
+                ? row[headerCol?.code || ""]
+                : "";
+          }
+          obj[headerCol.text] = _.merge(
+            {
+              ...(String(value).includes("=")
+                ? { f: value.replace("=", "") }
+                : { v: value }),
+              s: _.merge(
+                {},
+                style?.common,
+                style?.col,
+                headerCol?.style?.common,
+                headerCol?.style?.col
+              ),
+            },
+            typeof value === "number" ? { t: "n" } : {}
+          );
+          wpx[ColIndex] = {
+            wpx:
+              headerCol?.wpx ||
+              Math.max(wpx?.[ColIndex]?.wpx || 0, calcWidth(value)),
+          };
+        });
+        array.push(obj);
+      });
+      const head: any = {};
+      header.forEach(
+        (headerCol) =>
+          (head[headerCol.text] = {
+            v: headerCol.text,
+            s: _.merge(
+              {},
+              style?.common,
+              style?.header,
+              headerCol?.style?.common,
+              headerCol?.style?.header
+            ),
+          })
+      );
+      const worksheet = XLSX.utils.json_to_sheet([...empty, head, ...array], {
+        skipHeader: true,
+      });
+      XLSX.utils.book_append_sheet(workbook, worksheet, name);
+    });
+  } catch (err) {
+    log("추가 시트 생성중 오류 발생 : ", err);
+  }
+  // XLSXStyle.apply_style(workbook, worksheet);
+  const wbout = XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
+
+  // 이진 데이터를 Blob으로 변환하는 함수입니다.
+  function s2ab(s: any) {
+    const buffer = new ArrayBuffer(s.length);
+    const view = new Uint8Array(buffer);
+    for (let i = 0; i < s.length; i++) {
+      view[i] = s.charCodeAt(i) & 0xff;
+    }
+    return buffer;
+  }
+
+  // Blob을 이용하여 사용자가 파일을 다운로드 할 수 있게 합니다.
+  await saveAs(
+    new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
+    `${fileName}.xlsx`
+  );
+
+  if (onSuccess.constructor.name === "Function") onSuccess?.(list);
+  else await onSuccess?.(list);
+};
+
+export const delay = async (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));

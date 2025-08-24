@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, {
   CSSProperties,
   useCallback,
@@ -18,13 +18,14 @@ interface DatePickerProps {
   defaultSelectedRange?: [Date | null, Date | null]; // 범위 선택 시 초기 날짜
   selectionMode?: "single" | "range" | "spinner";
   onChange?: (date: Date | [Date | null, Date | null] | null) => void;
+  values?: Date | [Date | null, Date | null] | null;
   placeholder?: string;
   dateFormat?: (
     date: Date | [Date | null, Date | null] | null,
     showTimePicker: boolean
   ) => string;
   showTimePicker?: boolean; // 시간 선택기 표시 여부
-  zIndex?: CSSProperties['zIndex']
+  zIndex?: CSSProperties["zIndex"];
 }
 
 // 날짜/시간 포맷 함수 (YYYY-MM-DD HH:MM)
@@ -64,11 +65,12 @@ const DatePicker: React.FC<DatePickerProps> = ({
   defaultSelectedDate = null,
   defaultSelectedRange = [null, null],
   selectionMode = "single",
+  values,
   onChange,
   placeholder = "날짜를 선택하세요",
   dateFormat = defaultDateFormat,
   showTimePicker = false,
-  zIndex = 1000
+  zIndex = 1000,
 }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedSingleDate, setSelectedSingleDate] = useState<Date | null>(
@@ -133,7 +135,12 @@ const DatePicker: React.FC<DatePickerProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
+  useEffect(() => {
+    if (values)
+      if (selectionMode === "range") {
+        setSelectedDateRange(values as any);
+      } else setSelectedSingleDate(values as any);
+  }, [values]);
   const handleSelectDate = useCallback(
     (date: Date) => {
       setSelectedSingleDate(date);
@@ -227,13 +234,24 @@ const DatePicker: React.FC<DatePickerProps> = ({
             <div
               ref={calendarRef}
               className={styles.calendarPortal}
-              style={{ top: calendarPosition.top, left: calendarPosition.left, zIndex: zIndex ? `calc(${zIndex} + 1)` : undefined }}
+              style={{
+                top: calendarPosition.top,
+                left: calendarPosition.left,
+                zIndex: zIndex ? `calc(${zIndex} + 1)` : undefined,
+              }}
             >
               {renderPickerComponent()}
             </div>
-              <div style={{ zIndex, width: '100vw', height: '100vh', position: 'fixed' }} onClick={() => setIsCalendarOpen(false)} />
-          </>
-          ,
+            <div
+              style={{
+                zIndex,
+                width: "100vw",
+                height: "100dvh",
+                position: "fixed",
+              }}
+              onClick={() => setIsCalendarOpen(false)}
+            />
+          </>,
           document.body
         )}
     </div>

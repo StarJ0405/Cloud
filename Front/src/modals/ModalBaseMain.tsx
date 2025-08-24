@@ -1,5 +1,6 @@
 import Button from "@/components/buttons/Button";
 import style from "./ModalBase.module.css";
+import Image from "@/components/Image/Image";
 
 function ModalBaseMain(props: any) {
   return (
@@ -9,7 +10,7 @@ function ModalBaseMain(props: any) {
     >
       {props.withCloseButton ? (
         <Button className={style.closeButton} onClick={props.modalClose}>
-          &times;
+          <Image src="/resources/icons/closeBtn.png" size={props.size || 12} />
         </Button>
       ) : null}
 

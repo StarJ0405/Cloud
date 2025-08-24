@@ -1,21 +1,34 @@
 import P from "@/components/P/P";
+import Button from "@/components/buttons/Button";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import LoadingSpinner from "@/components/loading/LoadingSpinner";
-import NiceModal from "@ebay/nice-modal-react";
-import ModalBase from "../ModalBase";
 import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
+import NiceModal from "@ebay/nice-modal-react";
+import clsx from "clsx";
 import { useRef, useState } from "react";
-import style from "./ConfirmModal.module.css";
+import ModalBase from "../ModalBase";
+import styles from "./ConfirmModal.module.css";
+import Image from "@/components/Image/Image";
 
 const ConfirmModal = NiceModal.create(
-  ({ onConfirm, onCancel, message, cancelText, confirmText }: any) => {
+  ({
+    title = "",
+    onConfirm,
+    onCancel,
+    message,
+    cancelText,
+    confirmText,
+    withCloseButton = false,
+    admin = false,
+    width = "min(80%, 400px)",
+    height = "auto",
+    slideUp = false,
+    clickOutsideToClose = true,
+    classNames,
+  }: any) => {
     const [withHeader, withFooter] = [false, false];
-    const [width, height] = ["min(80%, 400px)", "auto"];
-    const withCloseButton = false;
-    const clickOutsideToClose = true;
-    const title = "";
     const buttonText = "close";
 
     const modal = useRef<any>(null);
@@ -57,31 +70,81 @@ const ConfirmModal = NiceModal.create(
         height={height}
         withHeader={withHeader}
         withFooter={withFooter}
-        withCloseButton={withCloseButton}
+        withCloseButton={false}
         clickOutsideToClose={clickOutsideToClose}
         title={title}
         buttonText={buttonText}
         borderRadius={6}
+        slideUp={slideUp}
       >
-        <FlexChild padding={"50px 24px 24px 24px"} height="100%">
-          <VerticalFlex gap={40} height={"100%"}>
-            <FlexChild>
-              <P
-                width="100%"
-                textAlign="center"
-                size={isMobile ? 16 : 18}
-                color={"#494949"}
-                weight={600}
-              >
-                {message}
-              </P>
+        {(title || withCloseButton) && (
+          <FlexChild
+            position="absolute"
+            top={15}
+            left={15}
+            width={"calc(100% - 30px)"}
+          >
+            <HorizontalFlex>
+              <FlexChild className={classNames?.title}>
+                {typeof title === "string" ? <P>{title}</P> : <>{title}</>}
+              </FlexChild>
+              {withCloseButton && (
+                <FlexChild width={"max-content"}>
+                  <Button
+                    width={"max-content"}
+                    className={styles.closeButton}
+                    onClick={onCancelClick}
+                  >
+                    <Image src="/resources/icons/closeBtn.png" size={12} />
+                  </Button>
+                </FlexChild>
+              )}
+            </HorizontalFlex>
+          </FlexChild>
+        )}
+
+        <FlexChild
+          padding={"50px 24px 24px 24px"}
+          height={"100%"}
+          position="relative"
+        >
+          <VerticalFlex
+            gap={20}
+            // height="calc(min(100%,100dvh) - 48px)"
+            maxHeight="calc(min(100%,100dvh) - 48px)"
+            overflowY="scroll"
+            hideScrollbar
+          >
+            <FlexChild
+              height={"100%"}
+              alignItems="flex-start"
+              className={classNames?.message}
+            >
+              {typeof message === "string" ? (
+                <P
+                  width="100%"
+                  textAlign="center"
+                  size={isMobile ? 16 : 18}
+                  color={"#494949"}
+                  weight={600}
+                >
+                  {message}
+                </P>
+              ) : (
+                <>{message}</>
+              )}
             </FlexChild>
-            <FlexChild>
+            <FlexChild position="sticky" bottom={0}>
               <HorizontalFlex justifyContent={"center"}>
                 {cancelText && (
                   <FlexChild height={48} padding={3}>
                     <div
-                      className={`${style.confirmButton} ${style.white}`}
+                      className={clsx(
+                        styles.confirmButton,
+                        admin ? styles.admin : styles.main,
+                        styles.white,
+                        classNames?.cancel
+                      )}
                       onClick={onCancelClick}
                     >
                       <P
@@ -96,7 +159,11 @@ const ConfirmModal = NiceModal.create(
                 )}
                 <FlexChild height={48} padding={3}>
                   <div
-                    className={`${style.confirmButton} ${style.red}`}
+                    className={clsx(
+                      styles.confirmButton,
+                      admin ? styles.admin : styles.main,
+                      classNames?.confirm
+                    )}
                     onClick={onConfirmClick}
                   >
                     {isBlocked && (

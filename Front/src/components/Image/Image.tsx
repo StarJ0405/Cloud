@@ -213,7 +213,7 @@ const Image = ({
         <img
           ref={(el) => {
             imgRef.current = el;
-            if (Ref) Ref(el);
+            if (Ref) (Ref as any)(el);
           }}
           src={src}
           className={className}

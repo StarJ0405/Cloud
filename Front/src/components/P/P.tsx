@@ -99,7 +99,7 @@ function P({
   // if (!font) {
   //   switch (flagCode) {
   //     case "kr":
-  font = "pretendard";
+  font = "Pretendard";
   //       break;
   //     case "cn":
   //     default:
@@ -168,7 +168,12 @@ function P({
         fontWeight:
           weight || fontWeight || (!className ? "inherit" : undefined),
         fontFamily: font || fontFamily,
-        fontSize: fontSize,
+        fontSize:
+          props_fontSize || size
+            ? fontSize
+            : !className
+            ? "inherit"
+            : undefined,
         fontStyle: i ? "italic" : fontStyle ? fontStyle : "normal",
         textIndent: textIndent,
         color: color || (!className ? "inherit" : undefined),

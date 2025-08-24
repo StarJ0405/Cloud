@@ -33,7 +33,7 @@
 }
 
 .month.other {
-  color: #555
+  color: #555;
 }
 
 .month:hover:not(.today) {

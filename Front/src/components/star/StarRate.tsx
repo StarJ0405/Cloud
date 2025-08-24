@@ -1,7 +1,7 @@
 "use client";
 // src/components/StarRate/StarRate.tsx
-import React, { useState, useEffect, useCallback, MouseEvent } from "react";
 import clsx from "clsx";
+import React, { MouseEvent, useCallback, useEffect, useState } from "react";
 import styles from "./StarRate.module.css";
 
 interface StarRateProps {
@@ -14,6 +14,7 @@ interface StarRateProps {
   maxScoreScale?: number;
   fillColor?: string;
   emptyColor?: string;
+  width: React.CSSProperties["width"];
 }
 
 function StarRate({
@@ -26,6 +27,7 @@ function StarRate({
   maxScoreScale = 5,
   fillColor = "gold",
   emptyColor = "#cacaca",
+  width,
 }: StarRateProps) {
   const [internalScore, setInternalScore] = useState(score);
   // hoverScore 상태 제거
@@ -45,7 +47,7 @@ function StarRate({
           fillWidths[i] = starWidth;
           normalizedScore -= 1;
         } else if (normalizedScore > 0) {
-          fillWidths[i] = normalizedScore * starWidth;
+          fillWidths[i] = normalizedScore * 14; // viewBox크기
           normalizedScore = 0;
         } else {
           fillWidths[i] = 0;
@@ -59,7 +61,7 @@ function StarRate({
   // displayScore는 이제 internalScore만 참조 (호버 없음)
   const displayScore = internalScore;
   const ratesResArr = calculateStarFillWidths(displayScore);
-
+  console.log(ratesResArr);
   const scoreUnitPerStar = maxScoreScale / starCount;
   const halfScoreUnitValue = 0.5 * scoreUnitPerStar;
 
@@ -114,7 +116,10 @@ function StarRate({
   const isInteractive = !readOnly;
 
   return (
-    <div className={clsx(styles.wrap, !isInteractive && styles.disabled)}>
+    <div
+      className={clsx(styles.wrap, !isInteractive && styles.disabled)}
+      style={{ width }}
+    >
       {Array.from({ length: starCount }).map((_, idx) => (
         <span
           className={clsx(styles.star_icon, !isInteractive && styles.disabled)}
@@ -130,6 +135,7 @@ function StarRate({
             height={starHeight}
             viewBox="0 0 14 13"
             fill={emptyColor}
+            style={{ width: starWidth, height: starHeight }}
           >
             <clipPath id={`starClip_${idx}`}>
               <rect width={`${ratesResArr[idx]}`} height={starHeight} />
